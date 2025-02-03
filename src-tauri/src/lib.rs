@@ -1,6 +1,6 @@
 use futures::stream::SplitSink;
-use futures::StreamExt;
 use futures::SinkExt;
+use futures::StreamExt;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use tauri::{Manager, State};
@@ -22,22 +22,32 @@ struct AppState {
     pub connections: HashMap<String, ArcSinkWssStream>,
 }
 
+type SharedState = Arc<Mutex<AppState>>;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
+    let state = Arc::new(Mutex::new(AppState::default()));
     tauri::Builder::default()
-        .setup(|app| {
-            app.manage(Arc::new(Mutex::new(AppState::default())));
-            Ok(())
-        })
+        .manage(state)
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![establish_connection, send_message])
+        .invoke_handler(tauri::generate_handler![
+            active_connections,
+            establish_connection,
+            send_message
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
 #[tauri::command(rename_all = "snake_case")]
+async fn active_connections(state: State<'_, SharedState>) -> Result<usize, String> {
+    let state = state.lock().await;
+    Ok(state.connections.keys().count())
+}
+
+#[tauri::command(rename_all = "snake_case")]
 async fn send_message(
-    state: State<'_, Mutex<AppState>>,
+    state: State<'_, SharedState>,
     address: &str,
     message: String,
 ) -> Result<(), String> {
@@ -59,10 +69,7 @@ async fn send_message(
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn establish_connection(
-    state: State<'_, Mutex<AppState>>,
-    address: &str,
-) -> Result<(), String> {
+async fn establish_connection(state: State<'_, SharedState>, address: &str) -> Result<(), String> {
     let (ws_stream, _) = connect_async(address)
         .await
         .map_err(|_| "Failed to connect with server")?;
