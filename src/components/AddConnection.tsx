@@ -5,15 +5,25 @@ import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 
 import { new_connection } from '../api/status';
 
+// 127.0.0.1:8080
 
 export default function AddConnection() {
     const [open, setOpen] = React.useState<boolean>(false);
     const [url, setUrl] = React.useState<string>('');
+    const [loading, setLoading] = React.useState<boolean>(false);
 
     const handleConnect = async () => {
         if (url) {
-            const result = await new_connection("ws://" + url);
-            console.log("Connection result:", result);
+            setLoading(true);
+            try {
+                const result = await new_connection("ws://" + url);
+                console.log("Connection result:", result);
+            } catch (error) {
+                console.error("Error in new_connection:", error);
+            } finally {
+                setLoading(false);
+                setOpen(false);
+            }
         } else {
             console.warn("URL is required to connect.");
         }
@@ -51,8 +61,8 @@ export default function AddConnection() {
                             sx={{ mb: 2, ml: 1 }}
                         />
                     </Stack>
-                    <Button variant="solid" onClick={handleConnect} fullWidth>
-                        Connect
+                    <Button loading={loading} variant="solid" onClick={handleConnect} fullWidth>
+                        {loading ? "Connecting..." : "Connect"}
                     </Button>
                 </Sheet>
             </Modal>

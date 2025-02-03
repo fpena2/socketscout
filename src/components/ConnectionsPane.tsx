@@ -1,22 +1,38 @@
 import * as React from 'react';
-import { Box, Chip, IconButton, Input, List, Typography, Sheet, Stack } from '@mui/joy';
+import { Box, Chip, IconButton, Input, List, Typography, Sheet, Stack, CircularProgress } from '@mui/joy';
 
-import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 import { active_connections } from '../api/status';
+
 import AddConnection from './AddConnection';
 
 
 export default function ConnectionsPane() {
-    const [activeConnections, setActiveConnections] = React.useState(0);
+    const [activeConnections, setActiveConnections] = React.useState<string[]>([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState<string>("");
+    const [searchTerm, setSearchTerm] = React.useState<string>("");
+
     React.useEffect(() => {
         const fetchConnections = async () => {
-            setActiveConnections(await active_connections());
+            try {
+                const connections = await active_connections();
+                setActiveConnections(connections);
+            } catch (error) {
+                setError("Failed to fetch connections.");
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchConnections();
     }, []);
+
+
+    const filteredConnections = activeConnections.filter(connection =>
+        connection.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <Sheet
@@ -35,7 +51,7 @@ export default function ConnectionsPane() {
                 <Typography
                     endDecorator={
                         <Chip color="primary">
-                            {activeConnections}
+                            {activeConnections.length}
                         </Chip>
                     }
                     sx={{ fontSize: { xs: 'md', md: 'lg' }, fontWeight: 'lg', mr: 'auto' }}
@@ -48,8 +64,8 @@ export default function ConnectionsPane() {
                 <Input
                     size="sm"
                     startDecorator={<SearchRoundedIcon />}
-                    placeholder="Search"
-                    aria-label="Search"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </Box>
             <List
@@ -59,14 +75,17 @@ export default function ConnectionsPane() {
                     '--ListItem-paddingX': '1rem',
                 }}
             >
-                {/* {chats.map((chat) => (
-                    <ChatListItem
-                        key={chat.id}
-                        {...chat}
-                        setSelectedChat={setSelectedChat}
-                        selectedChatId={selectedChatId}
-                    />
-                ))} */}
+                {loading ? (
+                    <CircularProgress />
+                ) : error ? (
+                    <Typography color="danger">{error}</Typography>
+                ) : (
+                    filteredConnections.map((connection, index) => (
+                        <Typography key={index} sx={{ padding: '0.5rem 1rem' }}>
+                            {connection}
+                        </Typography>
+                    ))
+                )}
             </List>
         </Sheet>
     );

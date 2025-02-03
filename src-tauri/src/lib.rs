@@ -40,9 +40,9 @@ pub async fn run() {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-async fn active_connections(state: State<'_, SharedState>) -> Result<usize, String> {
+async fn active_connections(state: State<'_, SharedState>) -> Result<Vec<String>, String> {
     let state = state.lock().await;
-    Ok(state.connections.keys().count())
+    Ok(state.connections.keys().cloned().collect())
 }
 
 #[tauri::command(rename_all = "snake_case")]
