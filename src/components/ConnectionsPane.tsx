@@ -3,20 +3,21 @@ import { Box, Chip, IconButton, Input, List, Typography, Sheet, Stack } from '@m
 
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-// import ChatListItem from './ChatListItem';
-// import { ChatProps } from '../types';
-// import { toggleMessagesPane } from '../utils';
 
-// type ConnectionsPaneProps = {
-//     chats: ChatProps[];
-//     setSelectedConnection: (chat: ChatProps) => void;
-//     selectedConnectionId: string;
-// };
+import { active_connections } from '../api/status';
+import AddConnection from './AddConnection';
 
-// props: ConnectionsPaneProps
+
 export default function ConnectionsPane() {
-    // const { chats, setSelectedConnection, selectedConnectionId } = props;
+    const [activeConnections, setActiveConnections] = React.useState(0);
+    React.useEffect(() => {
+        const fetchConnections = async () => {
+            setActiveConnections(await active_connections());
+        };
+
+        fetchConnections();
+    }, []);
+
     return (
         <Sheet
             sx={{
@@ -32,42 +33,16 @@ export default function ConnectionsPane() {
                 sx={{ alignItems: 'center', justifyContent: 'space-between', p: 2, pb: 1.5 }}
             >
                 <Typography
-                    component="h1"
                     endDecorator={
-                        <Chip
-                            variant="soft"
-                            color="primary"
-                            size="md"
-                            slotProps={{ root: { component: 'span' } }}
-                        >
-                            0
+                        <Chip color="primary">
+                            {activeConnections}
                         </Chip>
                     }
                     sx={{ fontSize: { xs: 'md', md: 'lg' }, fontWeight: 'lg', mr: 'auto' }}
                 >
                     Connections
                 </Typography>
-                <IconButton
-                    variant="plain"
-                    aria-label="edit"
-                    color="neutral"
-                    size="sm"
-                    sx={{ display: { xs: 'none', sm: 'unset' } }}
-                >
-                    <EditNoteRoundedIcon />
-                </IconButton>
-                <IconButton
-                    variant="plain"
-                    aria-label="edit"
-                    color="neutral"
-                    size="sm"
-                    onClick={() => {
-                        // toggleMessagesPane();
-                    }}
-                    sx={{ display: { sm: 'none' } }}
-                >
-                    <CloseRoundedIcon />
-                </IconButton>
+                <AddConnection />
             </Stack>
             <Box sx={{ px: 2, pb: 1.5 }}>
                 <Input

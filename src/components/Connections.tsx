@@ -2,11 +2,9 @@ import * as React from 'react';
 import Sheet from '@mui/joy/Sheet';
 
 import { ConnectionProps } from './types';
-
 import ConnectionsPane from './ConnectionsPane';
 
 export default function Connections() {
-    // const [selectedConnection, setSelectedConnection] = React.useState<ChatProps>(chats[0]);
     return (
         <Sheet
             sx={{
