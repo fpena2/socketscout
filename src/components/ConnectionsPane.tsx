@@ -1,12 +1,8 @@
 import * as React from 'react';
-import { Box, Chip, IconButton, Input, List, Typography, Sheet, Stack, CircularProgress } from '@mui/joy';
-
+import { Box, Chip, Input, List, ListItem, Typography, Sheet, Stack, CircularProgress } from '@mui/joy';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-
 import { active_connections } from '../api/status';
-
 import AddConnection from './AddConnection';
-
 
 export default function ConnectionsPane() {
     const [activeConnections, setActiveConnections] = React.useState<string[]>([]);
@@ -29,7 +25,6 @@ export default function ConnectionsPane() {
         fetchConnections();
     }, []);
 
-
     const filteredConnections = activeConnections.filter(connection =>
         connection.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -48,16 +43,20 @@ export default function ConnectionsPane() {
                 spacing={1}
                 sx={{ alignItems: 'center', justifyContent: 'space-between', p: 2, pb: 1.5 }}
             >
-                <Typography
-                    endDecorator={
-                        <Chip color="primary">
-                            {activeConnections.length}
-                        </Chip>
-                    }
-                    sx={{ fontSize: { xs: 'md', md: 'lg' }, fontWeight: 'lg', mr: 'auto' }}
+                <Stack
+                    direction="row"
+                    spacing={1}
                 >
-                    Connections
-                </Typography>
+                    <Typography
+                        sx={{ fontSize: { xs: 'md', md: 'lg' }, fontWeight: 'lg', mr: 'auto' }}
+                    >
+                        Connections
+                    </Typography>
+                    <Chip color="primary">
+                        {activeConnections.length}
+                    </Chip>
+                </Stack>
+
                 <AddConnection />
             </Stack>
             <Box sx={{ px: 2, pb: 1.5 }}>
@@ -81,9 +80,9 @@ export default function ConnectionsPane() {
                     <Typography color="danger">{error}</Typography>
                 ) : (
                     filteredConnections.map((connection, index) => (
-                        <Typography key={index} sx={{ padding: '0.5rem 1rem' }}>
-                            {connection}
-                        </Typography>
+                        <ListItem key={index} sx={{ padding: '0.5rem 1rem' }}>
+                            <Typography>{connection}</Typography>
+                        </ListItem>
                     ))
                 )}
             </List>
