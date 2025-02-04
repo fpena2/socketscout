@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Box, Chip, Input, List, ListItem, Typography, Sheet, Stack, CircularProgress } from '@mui/joy';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import { active_connections } from '../api/status';
-import AddConnection from './AddConnection';
+import { active_connections, new_connection } from '../api/status';
+import { AddConnection } from './AddConnection';
 
 export default function ConnectionsPane() {
     const [activeConnections, setActiveConnections] = React.useState<string[]>([]);
@@ -10,18 +10,28 @@ export default function ConnectionsPane() {
     const [error, setError] = React.useState<string>("");
     const [searchTerm, setSearchTerm] = React.useState<string>("");
 
-    React.useEffect(() => {
-        const fetchConnections = async () => {
-            try {
-                const connections = await active_connections();
-                setActiveConnections(connections);
-            } catch (error) {
-                setError("Failed to fetch connections.");
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchConnections = async () => {
+        setLoading(true);
+        try {
+            const connections = await active_connections();
+            setActiveConnections(connections);
+        } catch (error) {
+            setError("Failed to fetch connections.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const handleNewConnection = async (url: string) => {
+        try {
+            await new_connection("ws://" + url);
+            fetchConnections();
+        } catch (error) {
+            console.error("Error in new_connection:", error);
+        }
+    };
+
+    React.useEffect(() => {
         fetchConnections();
     }, []);
 
@@ -56,8 +66,7 @@ export default function ConnectionsPane() {
                         {activeConnections.length}
                     </Chip>
                 </Stack>
-
-                <AddConnection />
+                <AddConnection onNewConnection={handleNewConnection} />
             </Stack>
             <Box sx={{ px: 2, pb: 1.5 }}>
                 <Input

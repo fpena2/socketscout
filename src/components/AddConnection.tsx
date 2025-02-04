@@ -1,23 +1,23 @@
 import * as React from 'react';
 import { Box, IconButton, Typography, Sheet, ModalClose, Modal, Button, Input, Stack } from '@mui/joy';
-
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
-
-import { new_connection } from '../api/status';
 
 // 127.0.0.1:8080
 
-export default function AddConnection() {
+interface AddConnectionProps {
+    onNewConnection: (url: string) => Promise<void>;
+}
+
+const AddConnection: React.FC<AddConnectionProps> = ({ onNewConnection }) => {
     const [open, setOpen] = React.useState<boolean>(false);
-    const [url, setUrl] = React.useState<string>('');
+    const [url, setUrl] = React.useState<string>('127.0.0.1:8080');
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const handleConnect = async () => {
         if (url) {
             setLoading(true);
             try {
-                const result = await new_connection("ws://" + url);
-                console.log("Connection result:", result);
+                await onNewConnection(url);
             } catch (error) {
                 console.error("Error in new_connection:", error);
             } finally {
@@ -69,3 +69,5 @@ export default function AddConnection() {
         </Box>
     );
 }
+
+export { AddConnection };
