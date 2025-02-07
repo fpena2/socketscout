@@ -3,18 +3,18 @@ import Box from '@mui/joy/Box';
 import Sheet from '@mui/joy/Sheet';
 import Stack from '@mui/joy/Stack';
 import Avatar from '@mui/joy/Avatar';
-import ChatBubble from './ChatBubble';
+import ChatBubble from '../chat/ChatBubble';
 
-import { MessageInput } from './ui/input';
+import { MessageInput } from '.';
+import { MessagesPaneHeader } from '.';
 
-import MessagesPaneHeader from './MessagesPaneHeader';
-import { ChatProps, MessageProps } from '../types';
+import { ChatProps, MessageProps } from '../../../types';
 
 type MessagesPaneProps = {
   chat: ChatProps;
 };
 
-export default function MessagesPane(props: MessagesPaneProps) {
+function MessagesPane(props: MessagesPaneProps) {
   const { chat } = props;
   const [chatMessages, setChatMessages] = React.useState(chat.messages);
   const [textAreaValue, setTextAreaValue] = React.useState('');
@@ -83,3 +83,6 @@ export default function MessagesPane(props: MessagesPaneProps) {
     </Sheet>
   );
 }
+
+
+export { MessagesPane };

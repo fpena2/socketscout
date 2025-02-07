@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Sheet from '@mui/joy/Sheet';
 
-import MessagesPane from './MessagesPane';
-import ChatsPane from './ChatsPane';
+import { MessagesPane } from './ui/messages';
+import ChatsPane from './ui/chat/ChatsPane';
 
 import { ChatProps } from '../types';
 import { chats } from '../data';

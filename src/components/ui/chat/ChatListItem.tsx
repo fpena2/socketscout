@@ -7,8 +7,8 @@ import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import CircleIcon from '@mui/icons-material/Circle';
 import Avatar from '@mui/joy/Avatar';
-import { ChatProps, MessageProps, UserProps } from '../types';
-import { toggleMessagesPane } from '../utils';
+import { ChatProps, MessageProps, UserProps } from '../../../types';
+import { toggleMessagesPane } from '../../../utils';
 
 type ChatListItemProps = ListItemButtonProps & {
   id: string;
