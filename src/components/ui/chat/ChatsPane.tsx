@@ -28,40 +28,49 @@ export default function ChatsPane(props: ChatsPaneProps) {
       }}
     >
       <Stack
-        direction="row"
+        direction='row'
         spacing={1}
-        sx={{ alignItems: 'center', justifyContent: 'space-between', p: 2, pb: 1.5 }}
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          p: 2,
+          pb: 1.5,
+        }}
       >
         <Typography
-          component="h1"
+          component='h1'
           endDecorator={
             <Chip
-              variant="soft"
-              color="primary"
-              size="md"
+              variant='soft'
+              color='primary'
+              size='md'
               slotProps={{ root: { component: 'span' } }}
             >
               4
             </Chip>
           }
-          sx={{ fontSize: { xs: 'md', md: 'lg' }, fontWeight: 'lg', mr: 'auto' }}
+          sx={{
+            fontSize: { xs: 'md', md: 'lg' },
+            fontWeight: 'lg',
+            mr: 'auto',
+          }}
         >
           Messages
         </Typography>
         <IconButton
-          variant="plain"
-          aria-label="edit"
-          color="neutral"
-          size="sm"
+          variant='plain'
+          aria-label='edit'
+          color='neutral'
+          size='sm'
           sx={{ display: { xs: 'none', sm: 'unset' } }}
         >
           <EditNoteRoundedIcon />
         </IconButton>
         <IconButton
-          variant="plain"
-          aria-label="edit"
-          color="neutral"
-          size="sm"
+          variant='plain'
+          aria-label='edit'
+          color='neutral'
+          size='sm'
           onClick={() => {
             toggleMessagesPane();
           }}
@@ -72,10 +81,10 @@ export default function ChatsPane(props: ChatsPaneProps) {
       </Stack>
       <Box sx={{ px: 2, pb: 1.5 }}>
         <Input
-          size="sm"
+          size='sm'
           startDecorator={<SearchRoundedIcon />}
-          placeholder="Search"
-          aria-label="Search"
+          placeholder='Search'
+          aria-label='Search'
         />
       </Box>
       <List

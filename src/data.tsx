@@ -121,7 +121,8 @@ export const chats: ChatProps[] = [
         id: '10',
         timestamp: 'Today 2:20pm',
         sender: users[0],
-        content: 'Hey Olivia, can you please review the latest design when you can?',
+        content:
+          'Hey Olivia, can you please review the latest design when you can?',
       },
       {
         id: '11',
@@ -207,7 +208,8 @@ export const chats: ChatProps[] = [
       },
       {
         id: '3',
-        content: 'I am planning to repaint the walls and replace the old furniture.',
+        content:
+          'I am planning to repaint the walls and replace the old furniture.',
         timestamp: 'Wednesday 9:15am',
         sender: users[3],
       },

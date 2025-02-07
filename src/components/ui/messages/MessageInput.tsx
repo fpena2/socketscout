@@ -26,8 +26,8 @@ function MessageInput(props: MessageInputProps) {
     <Box sx={{ px: 2, pb: 3 }}>
       <FormControl>
         <Textarea
-          placeholder="Type something here…"
-          aria-label="Message"
+          placeholder='Type something here…'
+          aria-label='Message'
           ref={textAreaRef}
           onChange={(event) => {
             setTextAreaValue(event.target.value);
@@ -37,7 +37,7 @@ function MessageInput(props: MessageInputProps) {
           maxRows={10}
           endDecorator={
             <Stack
-              direction="row"
+              direction='row'
               sx={{
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -50,8 +50,8 @@ function MessageInput(props: MessageInputProps) {
             >
               <div style={{ flexGrow: 1 }} />
               <Button
-                size="sm"
-                color="primary"
+                size='sm'
+                color='primary'
                 sx={{ alignSelf: 'center', borderRadius: 'sm' }}
                 endDecorator={<SendRoundedIcon />}
                 onClick={handleClick}

@@ -31,21 +31,21 @@ export default function ChatListItem(props: ChatListItemProps) {
             setSelectedChat({ id, sender, messages });
           }}
           selected={selected}
-          color="neutral"
+          color='neutral'
           sx={{ flexDirection: 'column', alignItems: 'initial', gap: 1 }}
         >
-          <Stack direction="row" spacing={1.5}>
+          <Stack direction='row' spacing={1.5}>
             <Avatar src={sender.avatar} />
             <Box sx={{ flex: 1 }}>
-              <Typography level="title-sm">{sender.name}</Typography>
-              <Typography level="body-sm">{sender.username}</Typography>
+              <Typography level='title-sm'>{sender.name}</Typography>
+              <Typography level='body-sm'>{sender.username}</Typography>
             </Box>
             <Box sx={{ lineHeight: 1.5, textAlign: 'right' }}>
               {messages[0].unread && (
-                <CircleIcon sx={{ fontSize: 12 }} color="primary" />
+                <CircleIcon sx={{ fontSize: 12 }} color='primary' />
               )}
               <Typography
-                level="body-xs"
+                level='body-xs'
                 noWrap
                 sx={{ display: { xs: 'none', md: 'block' } }}
               >
@@ -54,7 +54,7 @@ export default function ChatListItem(props: ChatListItemProps) {
             </Box>
           </Stack>
           <Typography
-            level="body-sm"
+            level='body-sm'
             sx={{
               display: '-webkit-box',
               WebkitLineClamp: '2',

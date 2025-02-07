@@ -1,3 +1,3 @@
-export * from "./MessageInput"
-export * from "./MessagesPane"
-export * from "./MessagesPaneHeader"
+export * from './MessageInput';
+export * from './MessagesPane';
+export * from './MessagesPaneHeader';
