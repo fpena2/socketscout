@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { Stack } from '@mui/joy';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
 import Textarea from '@mui/joy/Textarea';
-import { IconButton, Stack } from '@mui/joy';
+import * as React from 'react';
 
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 

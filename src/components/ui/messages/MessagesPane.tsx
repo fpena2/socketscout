@@ -1,12 +1,11 @@
-import * as React from 'react';
+import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import Sheet from '@mui/joy/Sheet';
 import Stack from '@mui/joy/Stack';
-import Avatar from '@mui/joy/Avatar';
+import * as React from 'react';
 import ChatBubble from '../chat/ChatBubble';
 
-import { MessageInput } from '.';
-import { MessagesPaneHeader } from '.';
+import { MessageInput, MessagesPaneHeader } from '.';
 
 import { ChatProps, MessageProps } from '../../../types';
 
@@ -50,14 +49,17 @@ function MessagesPane(props: MessagesPaneProps) {
             return (
               <Stack
                 key={index}
-                direction="row"
+                direction='row'
                 spacing={2}
                 sx={{ flexDirection: isYou ? 'row-reverse' : 'row' }}
               >
                 {message.sender !== 'You' && (
                   <Avatar src={message.sender.avatar} />
                 )}
-                <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} />
+                <ChatBubble
+                  variant={isYou ? 'sent' : 'received'}
+                  {...message}
+                />
               </Stack>
             );
           })}
@@ -83,6 +85,5 @@ function MessagesPane(props: MessagesPaneProps) {
     </Sheet>
   );
 }
-
 
 export { MessagesPane };
