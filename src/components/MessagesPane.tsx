@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/joy/Box';
 import Sheet from '@mui/joy/Sheet';
 import Stack from '@mui/joy/Stack';
-import AvatarWithStatus from './AvatarWithStatus';
+import Avatar from '@mui/joy/Avatar';
 import ChatBubble from './ChatBubble';
 
 import { MessageInput } from './ui/input';
@@ -55,10 +55,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
                 sx={{ flexDirection: isYou ? 'row-reverse' : 'row' }}
               >
                 {message.sender !== 'You' && (
-                  <AvatarWithStatus
-                    online={message.sender.online}
-                    src={message.sender.avatar}
-                  />
+                  <Avatar src={message.sender.avatar} />
                 )}
                 <ChatBubble variant={isYou ? 'sent' : 'received'} {...message} />
               </Stack>

@@ -6,7 +6,7 @@ import ListItemButton, { ListItemButtonProps } from '@mui/joy/ListItemButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import CircleIcon from '@mui/icons-material/Circle';
-import AvatarWithStatus from './AvatarWithStatus';
+import Avatar from '@mui/joy/Avatar';
 import { ChatProps, MessageProps, UserProps } from '../types';
 import { toggleMessagesPane } from '../utils';
 
@@ -35,7 +35,7 @@ export default function ChatListItem(props: ChatListItemProps) {
           sx={{ flexDirection: 'column', alignItems: 'initial', gap: 1 }}
         >
           <Stack direction="row" spacing={1.5}>
-            <AvatarWithStatus online={sender.online} src={sender.avatar} />
+            <Avatar src={sender.avatar} />
             <Box sx={{ flex: 1 }}>
               <Typography level="title-sm">{sender.name}</Typography>
               <Typography level="body-sm">{sender.username}</Typography>
