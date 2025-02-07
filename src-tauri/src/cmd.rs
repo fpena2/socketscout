@@ -1,10 +1,14 @@
-use crate::state::{Counter, GetConnections, InsertConnection, SendMessage};
+use crate::actors::{
+    reader::{Reader, Tell},
+    state::{AppState, GetConnections, InsertConnection, MMessage, SendMessage, StoreMessage},
+};
+use chrono::Utc;
 use futures::StreamExt;
 use kameo::actor::ActorRef;
 use tauri::State;
-use tokio_tungstenite::connect_async;
+use tokio_tungstenite::{connect_async, tungstenite};
 
-type SharedState = ActorRef<Counter>;
+type SharedState = ActorRef<AppState>;
 
 #[tauri::command]
 pub async fn active_connections(state: State<'_, SharedState>) -> Result<Vec<String>, String> {
@@ -46,12 +50,30 @@ pub async fn establish_connection(
         .await
         .unwrap();
 
+    let address = address.to_string();
+    let actor_ref = kameo::spawn(Reader {
+        receiver: state.inner().clone(),
+    });
+
     tokio::spawn(async move {
         let mut read = read;
+        let actor_ref = actor_ref.clone();
         while let Some(message) = read.next().await {
             match message {
                 Ok(msg) => {
                     println!("Received: {:?}", msg);
+                    if let tungstenite::Message::Text(content) = msg {
+                        actor_ref
+                            .tell(Tell {
+                                address: address.clone(),
+                                message: MMessage {
+                                    content: content.as_str().to_string(),
+                                    received_at: Utc::now(),
+                                },
+                            })
+                            .await
+                            .unwrap();
+                    }
                 }
                 Err(e) => {
                     eprintln!("Error while receiving message: {:?}", e);
