@@ -3,6 +3,7 @@ import { Box, Chip, Input, List, ListItem, Typography, Sheet, Stack, CircularPro
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { active_connections, new_connection } from '../api/status';
 import { AddConnection } from './AddConnection';
+import { ConnectionList } from "./ConnectionList"
 
 export default function ConnectionsPane() {
     const [activeConnections, setActiveConnections] = React.useState<string[]>([]);
@@ -89,8 +90,15 @@ export default function ConnectionsPane() {
                     <Typography color="danger">{error}</Typography>
                 ) : (
                     filteredConnections.map((connection, index) => (
-                        <ListItem key={index} sx={{ padding: '0.5rem 1rem' }}>
-                            <Typography>{connection}</Typography>
+                        <ListItem key={index} >
+                            <ConnectionList
+                                key={index}
+                                address={connection.address}
+                                server={connection.server}
+                                messages={connection.messages}
+                                selectedChatId={undefined}
+                                setSelectedChat={() => { }}
+                            />
                         </ListItem>
                     ))
                 )}
