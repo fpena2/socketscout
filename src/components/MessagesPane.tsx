@@ -4,7 +4,9 @@ import Sheet from '@mui/joy/Sheet';
 import Stack from '@mui/joy/Stack';
 import AvatarWithStatus from './AvatarWithStatus';
 import ChatBubble from './ChatBubble';
-import MessageInput from './MessageInput';
+
+import { MessageInput } from './ui/input';
+
 import MessagesPaneHeader from './MessagesPaneHeader';
 import { ChatProps, MessageProps } from '../types';
 

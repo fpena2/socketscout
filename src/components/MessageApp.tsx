@@ -7,7 +7,7 @@ import ChatsPane from './ChatsPane';
 import { ChatProps } from '../types';
 import { chats } from '../data';
 
-export default function MyProfile() {
+function MessageApp() {
     const [selectedChat, setSelectedChat] = React.useState<ChatProps>(chats[0]);
     return (
         <Sheet
@@ -46,3 +46,5 @@ export default function MyProfile() {
         </Sheet>
     );
 }
+
+export { MessageApp };

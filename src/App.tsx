@@ -1,12 +1,12 @@
 import { Box, CssBaseline, CssVarsProvider } from "@mui/joy";
-import MyMessages from './components/MyMessages';
+import { MessageApp } from './components/MessageApp';
 
 function App() {
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
       <Box component="main" className="MainContent" sx={{ flex: 1 }}>
-        <MyMessages />
+        <MessageApp />
       </Box>
     </CssVarsProvider>
   );
