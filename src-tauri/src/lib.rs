@@ -1,3 +1,6 @@
+use log::LevelFilter;
+use tauri_plugin_log::{Target, TargetKind};
+
 mod actors;
 mod cmd;
 
@@ -13,6 +16,12 @@ pub async fn run() {
     tauri::Builder::default()
         .manage(actor_ref)
         .plugin(tauri_plugin_opener::init())
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .targets([Target::new(TargetKind::Stdout)])
+                .level(LevelFilter::Info)
+                .build(),
+        )
         .invoke_handler(tauri::generate_handler![
             active_connections,
             establish_connection,

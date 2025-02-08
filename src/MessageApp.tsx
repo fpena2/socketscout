@@ -7,8 +7,9 @@ import { MessagesPane } from '@/components/ui/messages';
 
 function MessageApp() {
   const [selectedChat, setSelectedChat] = React.useState<ChatProps>(
-    chatsData[0],
+    chatsData[0] || null,
   );
+
   return (
     <Sheet
       sx={{

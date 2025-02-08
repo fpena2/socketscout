@@ -37,10 +37,14 @@ pub async fn establish_connection(
     state: State<'_, SharedState>,
     address: &str,
 ) -> Result<(), String> {
+    log::info!("establish_connection {}", address);
+
     let (ws_stream, _) = connect_async(address)
         .await
         .map_err(|_| "Failed to connect with server")?;
 
+    log::info!("Connected to server");
+    
     let (write, read) = ws_stream.split();
     state
         .tell(InsertConnection {
@@ -61,7 +65,7 @@ pub async fn establish_connection(
         while let Some(message) = read.next().await {
             match message {
                 Ok(msg) => {
-                    println!("Received: {:?}", msg);
+                    log::info!("Received: {:?}", msg);
                     if let tungstenite::Message::Text(content) = msg {
                         actor_ref
                             .tell(Tell {
