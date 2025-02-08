@@ -1,86 +1,14 @@
-import {
-  Box,
-  Button,
-  Chip,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  FormControl,
-  Option,
-  Input,
-  Modal,
-  ModalDialog,
-  Select,
-  List,
-  Sheet,
-  Stack,
-  Typography,
-} from '@mui/joy';
-import { Add } from '@mui/icons-material';
+import { Box, Chip, Input, List, Sheet, Stack, Typography } from '@mui/joy';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import React from 'react';
 
 import { ChatProps } from '../../../types/types';
-import { ChatListItem } from '.';
+import { ChatListItem, NewChat } from '.';
 
 type ChatsPaneProps = {
   chats: ChatProps[];
   setSelectedChat: (chat: ChatProps) => void;
   selectedChatId: string;
 };
-
-function NewMessage() {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [connectionType, setCconnectionType] = React.useState('ws://');
-  return (
-    <React.Fragment>
-      <Button
-        variant='outlined'
-        color='neutral'
-        startDecorator={<Add />}
-        onClick={() => setOpen(true)}
-      >
-        New Connection
-      </Button>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <ModalDialog>
-          <DialogTitle>Connect to new server</DialogTitle>
-          <DialogContent>Fill in the information of the server.</DialogContent>
-          <form
-            onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              setOpen(false);
-            }}
-          >
-            <Stack spacing={2}>
-              <FormControl>
-                <Input
-                  autoFocus
-                  required
-                  placeholder='IP Address'
-                  startDecorator={
-                    <React.Fragment>
-                      <Select
-                        variant='plain'
-                        value={connectionType}
-                        onChange={(_, value) => setCconnectionType(value!)}
-                      >
-                        <Option value='ws://'>ws://</Option>
-                        <Option value='sws://'>sws://</Option>
-                      </Select>
-                      <Divider orientation='vertical' />
-                    </React.Fragment>
-                  }
-                />
-              </FormControl>
-              <Button type='submit'>Submit</Button>
-            </Stack>
-          </form>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
 
 function ChatsPane(props: ChatsPaneProps) {
   const { chats, setSelectedChat, selectedChatId } = props;
@@ -123,7 +51,7 @@ function ChatsPane(props: ChatsPaneProps) {
         >
           Messages
         </Typography>
-        <NewMessage />
+        <NewChat />
       </Stack>
       <Box sx={{ px: 2, pb: 1.5 }}>
         <Input

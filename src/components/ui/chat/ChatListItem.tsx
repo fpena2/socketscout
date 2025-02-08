@@ -27,7 +27,6 @@ function ChatListItem(props: ChatListItemProps) {
       <ListItem>
         <ListItemButton
           onClick={() => {
-            // toggleMessagesPane();
             setSelectedChat({ id, sender, messages });
           }}
           selected={selected}
