@@ -7,8 +7,8 @@ import ListItemButton, { ListItemButtonProps } from '@mui/joy/ListItemButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import * as React from 'react';
-import { ChatProps, MessageProps, UserProps } from '../../../types/types';
-// import { toggleMessagesPane } from '../../../utils';
+
+import { ChatProps, MessageProps, UserProps } from '@/types';
 
 type ChatListItemProps = ListItemButtonProps & {
   id: string;
@@ -19,7 +19,7 @@ type ChatListItemProps = ListItemButtonProps & {
   setSelectedChat: (chat: ChatProps) => void;
 };
 
-export default function ChatListItem(props: ChatListItemProps) {
+function ChatListItem(props: ChatListItemProps) {
   const { id, sender, messages, selectedChatId, setSelectedChat } = props;
   const selected = selectedChatId === id;
   return (
@@ -71,3 +71,5 @@ export default function ChatListItem(props: ChatListItemProps) {
     </React.Fragment>
   );
 }
+
+export { ChatListItem };

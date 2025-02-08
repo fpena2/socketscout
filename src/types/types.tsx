@@ -1,11 +1,11 @@
-export type UserProps = {
+type UserProps = {
   name: string;
   username: string;
   avatar: string;
   online: boolean;
 };
 
-export type MessageProps = {
+type MessageProps = {
   id: string;
   content: string;
   timestamp: string;
@@ -18,12 +18,24 @@ export type MessageProps = {
   };
 };
 
-export type ChatProps = {
+type ChatProps = {
   id: string;
   sender: UserProps;
   messages: MessageProps[];
 };
 
-export type MessagesPaneProps = {
+type MessagesPaneProps = {
   chat: ChatProps;
+};
+
+type ChatBubbleProps = MessageProps & {
+  variant: 'sent' | 'received';
+};
+
+export type {
+  UserProps,
+  MessageProps,
+  ChatProps,
+  MessagesPaneProps,
+  ChatBubbleProps,
 };

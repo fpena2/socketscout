@@ -1,12 +1,9 @@
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
 import { Avatar, Box, Sheet, Stack, Typography } from '@mui/joy';
-import { MessageProps } from '../../../types/types';
 
-type ChatBubbleProps = MessageProps & {
-  variant: 'sent' | 'received';
-};
+import { ChatBubbleProps } from '@/types';
 
-export default function ChatBubble(props: ChatBubbleProps) {
+function ChatBubble(props: ChatBubbleProps) {
   const { content, variant, timestamp, attachment = undefined, sender } = props;
   const isSent = variant === 'sent';
   return (
@@ -101,3 +98,5 @@ export default function ChatBubble(props: ChatBubbleProps) {
     </Box>
   );
 }
+
+export { ChatBubble };

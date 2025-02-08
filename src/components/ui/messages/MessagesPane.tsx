@@ -3,15 +3,10 @@ import Box from '@mui/joy/Box';
 import Sheet from '@mui/joy/Sheet';
 import Stack from '@mui/joy/Stack';
 import * as React from 'react';
-import ChatBubble from '../chat/ChatBubble';
 
+import { ChatBubble } from '@/components/ui/chat';
 import { MessageInput, MessagesPaneHeader } from '.';
-
-import {
-  ChatProps,
-  MessageProps,
-  MessagesPaneProps,
-} from '../../../types/types';
+import { MessageProps, MessagesPaneProps } from '@/types';
 
 function MessagesPane(props: MessagesPaneProps) {
   const { chat } = props;

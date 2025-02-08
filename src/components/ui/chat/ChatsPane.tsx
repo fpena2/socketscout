@@ -1,6 +1,3 @@
-// import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
   Box,
   Button,
@@ -9,23 +6,22 @@ import {
   DialogTitle,
   Divider,
   FormControl,
-  FormLabel,
-  IconButton,
   Option,
   Input,
   Modal,
   ModalDialog,
   Select,
+  List,
+  Sheet,
+  Stack,
+  Typography,
 } from '@mui/joy';
-import List from '@mui/joy/List';
-import Sheet from '@mui/joy/Sheet';
-import Stack from '@mui/joy/Stack';
-import Typography from '@mui/joy/Typography';
-import { ChatProps } from '../../../types/types';
-// import { toggleMessagesPane } from '../../../utils';
-import ChatListItem from './ChatListItem';
 import { Add } from '@mui/icons-material';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import React from 'react';
+
+import { ChatProps } from '../../../types/types';
+import { ChatListItem } from '.';
 
 type ChatsPaneProps = {
   chats: ChatProps[];
@@ -86,7 +82,7 @@ function NewMessage() {
   );
 }
 
-export default function ChatsPane(props: ChatsPaneProps) {
+function ChatsPane(props: ChatsPaneProps) {
   const { chats, setSelectedChat, selectedChatId } = props;
   return (
     <Sheet
@@ -156,3 +152,5 @@ export default function ChatsPane(props: ChatsPaneProps) {
     </Sheet>
   );
 }
+
+export { ChatsPane };

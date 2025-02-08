@@ -1,5 +1,5 @@
 import { Box, CssBaseline, CssVarsProvider } from '@mui/joy';
-import { MessageApp } from './components/MessageApp';
+import { MessageApp } from '@/MessageApp';
 
 function App() {
   return (
