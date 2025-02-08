@@ -5,18 +5,69 @@ import {
   DialogTitle,
   Divider,
   Option,
-  FormControl,
   Input,
   Modal,
   ModalDialog,
   Select,
   Stack,
+  Box,
+  Grid,
 } from '@mui/joy';
 import React from 'react';
+import { establish_connection } from '@/api/status';
+
+const validateIpAddress = (ip: string) => {
+  const parts = ip.split('.');
+  return (
+    parts.length === 4 &&
+    parts.every((part) => {
+      const num = parseInt(part, 10);
+      return num >= 0 && num <= 255 && part.length > 0;
+    })
+  );
+};
+
+const validatePort = (port: number) => {
+  return port >= 0 && port <= 65535;
+};
 
 function ChatNewConnection() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [connectionType, setCconnectionType] = React.useState('ws://');
+
+  const [ipAddress, setIpAddress] = React.useState('127.0.0.1');
+  const [ipError, setIpError] = React.useState<boolean>(false);
+
+  const [port, setPort] = React.useState<number>(8080);
+  const [portError, setPortError] = React.useState<boolean>(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!validateIpAddress(ipAddress)) {
+      return;
+    }
+    try {
+      const url = new URL(connectionType + ipAddress + ':' + port);
+      await establish_connection(url);
+      setOpen(false);
+      console.log(url);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleIpChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newIp = event.target.value;
+    setIpAddress(newIp);
+    setIpError(!validateIpAddress(newIp));
+  };
+
+  const handlePortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newPort = parseInt(event.target.value, 10);
+    setPort(newPort);
+    setPortError(!validatePort(newPort));
+  };
+
   return (
     <React.Fragment>
       <Button
@@ -31,33 +82,42 @@ function ChatNewConnection() {
         <ModalDialog>
           <DialogTitle>Connect to new server</DialogTitle>
           <DialogContent>Fill in the information of the server.</DialogContent>
-          <form
-            onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              setOpen(false);
-            }}
-          >
+          <form onSubmit={handleSubmit}>
             <Stack spacing={2}>
-              <FormControl>
-                <Input
-                  autoFocus
-                  required
-                  placeholder='IP Address'
-                  startDecorator={
-                    <React.Fragment>
-                      <Select
-                        variant='plain'
-                        value={connectionType}
-                        onChange={(_, value) => setCconnectionType(value!)}
-                      >
-                        <Option value='ws://'>ws://</Option>
-                        <Option value='sws://'>sws://</Option>
-                      </Select>
-                      <Divider orientation='vertical' />
-                    </React.Fragment>
-                  }
-                />
-              </FormControl>
+              <Grid container spacing={1}>
+                <Grid>
+                  <Input
+                    autoFocus
+                    required
+                    placeholder='IP Address'
+                    value={ipAddress}
+                    onChange={handleIpChange}
+                    error={ipError}
+                    startDecorator={
+                      <React.Fragment>
+                        <Select
+                          variant='plain'
+                          value={connectionType}
+                          onChange={(_, value) => setCconnectionType(value!)}
+                        >
+                          <Option value='ws://'>ws://</Option>
+                          <Option value='sws://'>sws://</Option>
+                        </Select>
+                        <Divider orientation='vertical' />
+                      </React.Fragment>
+                    }
+                  />
+                </Grid>
+                <Grid>
+                  <Input
+                    required
+                    placeholder='Port'
+                    value={port}
+                    onChange={handlePortChange}
+                    error={portError}
+                  />
+                </Grid>
+              </Grid>
               <Button type='submit'>Submit</Button>
             </Stack>
           </form>

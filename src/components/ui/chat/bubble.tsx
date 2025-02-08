@@ -13,9 +13,6 @@ function ChatBubble(props: ChatBubbleProps) {
         spacing={2}
         sx={{ justifyContent: 'space-between', mb: 0.25 }}
       >
-        <Typography level='body-xs'>
-          {sender === 'You' ? sender : sender.name}
-        </Typography>
         <Typography level='body-xs'>{timestamp}</Typography>
       </Stack>
       {attachment ? (
