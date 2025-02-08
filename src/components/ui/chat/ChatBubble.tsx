@@ -1,6 +1,6 @@
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
 import { Avatar, Box, Sheet, Stack, Typography } from '@mui/joy';
-import { MessageProps } from '../../../types';
+import { MessageProps } from '../../../types/types';
 
 type ChatBubbleProps = MessageProps & {
   variant: 'sent' | 'received';

@@ -7,8 +7,8 @@ import ListItemButton, { ListItemButtonProps } from '@mui/joy/ListItemButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import * as React from 'react';
-import { ChatProps, MessageProps, UserProps } from '../../../types';
-import { toggleMessagesPane } from '../../../utils';
+import { ChatProps, MessageProps, UserProps } from '../../../types/types';
+// import { toggleMessagesPane } from '../../../utils';
 
 type ChatListItemProps = ListItemButtonProps & {
   id: string;
@@ -27,7 +27,7 @@ export default function ChatListItem(props: ChatListItemProps) {
       <ListItem>
         <ListItemButton
           onClick={() => {
-            toggleMessagesPane();
+            // toggleMessagesPane();
             setSelectedChat({ id, sender, messages });
           }}
           selected={selected}

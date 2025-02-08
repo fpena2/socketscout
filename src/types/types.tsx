@@ -23,3 +23,7 @@ export type ChatProps = {
   sender: UserProps;
   messages: MessageProps[];
 };
+
+export type MessagesPaneProps = {
+  chat: ChatProps;
+};

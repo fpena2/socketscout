@@ -7,11 +7,11 @@ import ChatBubble from '../chat/ChatBubble';
 
 import { MessageInput, MessagesPaneHeader } from '.';
 
-import { ChatProps, MessageProps } from '../../../types';
-
-type MessagesPaneProps = {
-  chat: ChatProps;
-};
+import {
+  ChatProps,
+  MessageProps,
+  MessagesPaneProps,
+} from '../../../types/types';
 
 function MessagesPane(props: MessagesPaneProps) {
   const { chat } = props;

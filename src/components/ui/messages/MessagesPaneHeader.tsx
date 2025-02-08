@@ -1,11 +1,9 @@
-import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import Avatar from '@mui/joy/Avatar';
 import IconButton from '@mui/joy/IconButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
-import { UserProps } from '../../../types';
-import { toggleMessagesPane } from '../../../utils';
+import { UserProps } from '../../../types/types';
 
 type MessagesPaneHeaderProps = {
   sender: UserProps;
@@ -30,26 +28,14 @@ function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
         spacing={{ xs: 1, md: 2 }}
         sx={{ alignItems: 'center' }}
       >
-        <IconButton
-          variant='plain'
-          color='neutral'
-          size='sm'
-          sx={{ display: { xs: 'inline-flex', sm: 'none' } }}
-          onClick={() => toggleMessagesPane()}
+        <Avatar size='lg' />
+        <Typography
+          component='h2'
+          noWrap
+          sx={{ fontWeight: 'lg', fontSize: 'lg' }}
         >
-          <ArrowBackIosNewRoundedIcon />
-        </IconButton>
-        <Avatar size='lg' src={sender.avatar} />
-        <div>
-          <Typography
-            component='h2'
-            noWrap
-            sx={{ fontWeight: 'lg', fontSize: 'lg' }}
-          >
-            {sender.name}
-          </Typography>
-          <Typography level='body-sm'>{sender.username}</Typography>
-        </div>
+          {sender.name}
+        </Typography>
       </Stack>
       <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
         <IconButton size='sm' variant='plain' color='neutral'>

@@ -5,7 +5,7 @@ import ChatsPane from './ui/chat/ChatsPane';
 import { MessagesPane } from './ui/messages';
 
 import { chats } from '../data';
-import { ChatProps } from '../types';
+import { ChatProps } from '../types/types';
 
 function MessageApp() {
   const [selectedChat, setSelectedChat] = React.useState<ChatProps>(chats[0]);

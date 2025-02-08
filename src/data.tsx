@@ -1,4 +1,4 @@
-import { ChatProps, UserProps } from './types';
+import { ChatProps, UserProps } from './types/types';
 
 export const users: UserProps[] = [
   {
