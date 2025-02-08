@@ -5,7 +5,7 @@ import Stack from '@mui/joy/Stack';
 import * as React from 'react';
 
 import { ChatBubble } from '@/components/ui/chat';
-import { MessageInput, MessagesPaneHeader } from '.';
+import { MessagesInput, MessagesPaneHeader } from '.';
 import { MessageProps, MessagesPaneProps } from '@/types';
 
 function MessagesPane(props: MessagesPaneProps) {
@@ -60,7 +60,7 @@ function MessagesPane(props: MessagesPaneProps) {
           })}
         </Stack>
       </Box>
-      <MessageInput
+      <MessagesInput
         textAreaValue={textAreaValue}
         setTextAreaValue={setTextAreaValue}
         onSubmit={() => {

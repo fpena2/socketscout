@@ -2,7 +2,7 @@ import { Box, Chip, Input, List, Sheet, Stack, Typography } from '@mui/joy';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 import { ChatProps } from '../../../types/types';
-import { ChatListItem, NewChat } from '.';
+import { ChatListItem, ChatNewConnection } from '.';
 
 type ChatsPaneProps = {
   chats: ChatProps[];
@@ -51,7 +51,7 @@ function ChatsPane(props: ChatsPaneProps) {
         >
           Messages
         </Typography>
-        <NewChat />
+        <ChatNewConnection />
       </Stack>
       <Box sx={{ px: 2, pb: 1.5 }}>
         <Input

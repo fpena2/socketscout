@@ -14,7 +14,7 @@ import {
 } from '@mui/joy';
 import React from 'react';
 
-function NewChat() {
+function ChatNewConnection() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [connectionType, setCconnectionType] = React.useState('ws://');
   return (
@@ -67,4 +67,4 @@ function NewChat() {
   );
 }
 
-export { NewChat };
+export { ChatNewConnection };

@@ -13,7 +13,7 @@ export type MessageInputProps = {
   onSubmit: () => void;
 };
 
-function MessageInput(props: MessageInputProps) {
+function MessagesInput(props: MessageInputProps) {
   const { textAreaValue, setTextAreaValue, onSubmit } = props;
   const textAreaRef = React.useRef<HTMLDivElement>(null);
   const handleClick = () => {
@@ -76,4 +76,4 @@ function MessageInput(props: MessageInputProps) {
   );
 }
 
-export { MessageInput };
+export { MessagesInput };
