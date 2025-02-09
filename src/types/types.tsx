@@ -24,18 +24,8 @@ type ChatProps = {
   messages: MessageProps[];
 };
 
-type MessagesPaneProps = {
-  chat: ChatProps;
-};
-
 type ChatBubbleProps = MessageProps & {
   variant: 'sent' | 'received';
 };
 
-export type {
-  UserProps,
-  MessageProps,
-  ChatProps,
-  MessagesPaneProps,
-  ChatBubbleProps,
-};
+export type { UserProps, MessageProps, ChatProps, ChatBubbleProps };

@@ -6,10 +6,35 @@ import * as React from 'react';
 
 import { ChatBubble } from '@/components/ui/chat';
 import { MessagesInput, MessagesPaneHeader } from '.';
-import { MessageProps, MessagesPaneProps } from '@/types';
+import { ChatProps, MessageProps } from '@/types';
+
+function EmptyMessagesPane() {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        color: 'text.secondary',
+        textAlign: 'center',
+      }}
+    >
+      <p>No messages available. Start the conversation!</p>
+    </Box>
+  );
+}
+
+type MessagesPaneProps = {
+  chat: ChatProps | null;
+};
 
 function MessagesPane(props: MessagesPaneProps) {
   const { chat } = props;
+  if (!chat) {
+    return <EmptyMessagesPane />;
+  }
+
   const [chatMessages, setChatMessages] = React.useState(chat.messages);
   const [textAreaValue, setTextAreaValue] = React.useState('');
 

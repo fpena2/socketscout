@@ -1,17 +1,17 @@
 import { Box, Chip, Input, List, Sheet, Stack, Typography } from '@mui/joy';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
-import { ChatProps } from '../../../types/types';
-import { ChatListItem, ChatNewConnection } from '.';
+import { ChatProps } from '@/types';
+import { ChatList, ChatNewConnection } from '.';
 
 type ChatsPaneProps = {
   chats: ChatProps[];
+  selectedChat: ChatProps | null;
   setSelectedChat: (chat: ChatProps) => void;
-  selectedChatId: string;
 };
 
 function ChatsPane(props: ChatsPaneProps) {
-  const { chats, setSelectedChat, selectedChatId } = props;
+  const { chats, selectedChat, setSelectedChat } = props;
   return (
     <Sheet
       sx={{
@@ -61,22 +61,11 @@ function ChatsPane(props: ChatsPaneProps) {
           aria-label='Search'
         />
       </Box>
-      <List
-        sx={{
-          py: 0,
-          '--ListItem-paddingY': '0.75rem',
-          '--ListItem-paddingX': '1rem',
-        }}
-      >
-        {chats.map((chat) => (
-          <ChatListItem
-            key={chat.id}
-            {...chat}
-            setSelectedChat={setSelectedChat}
-            selectedChatId={selectedChatId}
-          />
-        ))}
-      </List>
+      <ChatList
+        chats={chats}
+        selectedChat={selectedChat}
+        setSelectedChat={setSelectedChat}
+      />
     </Sheet>
   );
 }

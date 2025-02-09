@@ -1,27 +1,61 @@
 import CircleIcon from '@mui/icons-material/Circle';
-import Avatar from '@mui/joy/Avatar';
-import Box from '@mui/joy/Box';
-import ListDivider from '@mui/joy/ListDivider';
-import ListItem from '@mui/joy/ListItem';
-import ListItemButton, { ListItemButtonProps } from '@mui/joy/ListItemButton';
-import Stack from '@mui/joy/Stack';
-import Typography from '@mui/joy/Typography';
 import * as React from 'react';
+import {
+  Avatar,
+  Box,
+  ListDivider,
+  ListItem,
+  ListItemButton,
+  ListItemButtonProps,
+  Stack,
+  Typography,
+  List,
+} from '@mui/joy';
 
 import { ChatProps, MessageProps, UserProps } from '@/types';
+
+type ChatListProps = {
+  chats: ChatProps[];
+  selectedChat: ChatProps | null;
+  setSelectedChat: (chat: ChatProps) => void;
+};
+
+function ChatList(props: ChatListProps) {
+  const { chats, selectedChat, setSelectedChat } = props;
+  return (
+    <List
+      sx={{
+        py: 0,
+        '--ListItem-paddingY': '0.75rem',
+        '--ListItem-paddingX': '1rem',
+      }}
+    >
+      {chats.map((chat) => (
+        <ChatListItem
+          key={chat.id}
+          {...chat}
+          selectedChat={selectedChat}
+          setSelectedChat={setSelectedChat}
+        />
+      ))}
+    </List>
+  );
+}
 
 type ChatListItemProps = ListItemButtonProps & {
   id: string;
   unread?: boolean;
   sender: UserProps;
   messages: MessageProps[];
-  selectedChatId?: string;
+  selectedChat?: ChatProps;
   setSelectedChat: (chat: ChatProps) => void;
 };
 
 function ChatListItem(props: ChatListItemProps) {
-  const { id, sender, messages, selectedChatId, setSelectedChat } = props;
-  const selected = selectedChatId === id;
+  const { id, sender, messages, selectedChat, setSelectedChat } = props;
+  const selected = selectedChat?.id === id;
+  const latestMessage = messages[0]; // Get the latest message safely
+
   return (
     <React.Fragment>
       <ListItem>
@@ -39,7 +73,7 @@ function ChatListItem(props: ChatListItemProps) {
               <Typography level='title-sm'>{sender.name}</Typography>
             </Box>
             <Box sx={{ lineHeight: 1.5, textAlign: 'right' }}>
-              {messages[0].unread && (
+              {latestMessage?.unread && (
                 <CircleIcon sx={{ fontSize: 12 }} color='primary' />
               )}
               <Typography
@@ -61,7 +95,7 @@ function ChatListItem(props: ChatListItemProps) {
               textOverflow: 'ellipsis',
             }}
           >
-            {messages[0].content}
+            {latestMessage?.content}
           </Typography>
         </ListItemButton>
       </ListItem>
@@ -70,4 +104,4 @@ function ChatListItem(props: ChatListItemProps) {
   );
 }
 
-export { ChatListItem };
+export { ChatList };

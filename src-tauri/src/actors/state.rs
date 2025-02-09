@@ -3,6 +3,7 @@ use futures::stream::SplitSink;
 use futures::SinkExt;
 use kameo::message::{Context, Message};
 use kameo::Actor;
+use serde::Serialize;
 use std::collections::HashMap;
 use tokio_tungstenite::tungstenite;
 use tokio_tungstenite::WebSocketStream;
@@ -12,19 +13,23 @@ type SinkWssStream = SplitSink<
     tungstenite::Message,
 >;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct MMessage {
     pub content: String,
     pub received_at: DateTime<Utc>,
 }
 
 #[derive(Actor, Default)]
+#[derive(Serialize)]
 pub struct AppState {
+    #[serde(skip_serializing)]
     pub connections: HashMap<String, SinkWssStream>,
     pub conversations: HashMap<String, Vec<MMessage>>,
 }
 
 pub struct GetConnections;
+
+pub struct GetConversations;
 
 pub struct InsertConnection {
     pub address: String,
@@ -50,6 +55,18 @@ impl Message<GetConnections> for AppState {
         _ctx: Context<'_, Self, Self::Reply>,
     ) -> Self::Reply {
         self.connections.keys().cloned().collect()
+    }
+}
+
+impl Message<GetConversations> for AppState {
+    type Reply = Result<String, String>;
+
+    async fn handle(
+        &mut self,
+        _msg: GetConversations,
+        _ctx: Context<'_, Self, Self::Reply>,
+    ) -> Self::Reply {
+        serde_json::to_string(&self.conversations).map_err(|e| e.to_string())
     }
 }
 

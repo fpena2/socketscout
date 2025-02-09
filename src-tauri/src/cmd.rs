@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::actors::{
     reader::{Reader, Tell},
     state::{AppState, GetConnections, InsertConnection, MMessage, SendMessage, StoreMessage},
@@ -9,6 +11,10 @@ use tauri::State;
 use tokio_tungstenite::{connect_async, tungstenite};
 
 type SharedState = ActorRef<AppState>;
+
+struct ActiveConnections {
+    connections: HashMap<String, Vec<String>>,
+}
 
 #[tauri::command]
 pub async fn active_connections(state: State<'_, SharedState>) -> Result<Vec<String>, String> {
@@ -44,7 +50,7 @@ pub async fn establish_connection(
         .map_err(|_| "Failed to connect with server")?;
 
     log::info!("Connected to server");
-    
+
     let (write, read) = ws_stream.split();
     state
         .tell(InsertConnection {

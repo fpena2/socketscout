@@ -1,14 +1,20 @@
 import * as React from 'react';
 import Sheet from '@mui/joy/Sheet';
-import { chatsData } from '@/data';
 import { ChatProps } from '@/types';
 import { ChatsPane } from '@/components/ui/chat';
 import { MessagesPane } from '@/components/ui/messages';
 
 function MessageApp() {
-  const [selectedChat, setSelectedChat] = React.useState<ChatProps>(
-    chatsData[0] || null,
+  const [chatsData, setChatsData] = React.useState<ChatProps[]>([]);
+  const [selectedChat, setSelectedChat] = React.useState<ChatProps | null>(
+    null,
   );
+
+  React.useEffect(() => {
+    if (chatsData.length > 0) {
+      setSelectedChat(chatsData[0]);
+    }
+  }, [chatsData]);
 
   return (
     <Sheet
@@ -39,7 +45,7 @@ function MessageApp() {
       >
         <ChatsPane
           chats={chatsData}
-          selectedChatId={selectedChat.id}
+          selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
         />
       </Sheet>

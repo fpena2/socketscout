@@ -23,7 +23,7 @@ pub async fn run() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            active_connections,
+            // active_connections,
             establish_connection,
             send_message
         ])
