@@ -12,9 +12,13 @@ import {
   Stack,
   Box,
   Grid,
+  Alert,
+  Snackbar,
+  IconButton,
 } from '@mui/joy';
 import React from 'react';
 import { establish_connection } from '@/api/status';
+import Close from '@mui/icons-material/Close';
 
 const validateIpAddress = (ip: string) => {
   const parts = ip.split('.');
@@ -41,6 +45,12 @@ function ChatNewConnection() {
   const [port, setPort] = React.useState<number>(8080);
   const [portError, setPortError] = React.useState<boolean>(false);
 
+  const [connectionError, setConnectionError] = React.useState<string | null>(null);
+
+  const dismissError = () => {
+    setConnectionError(null);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!validateIpAddress(ipAddress)) {
@@ -51,8 +61,8 @@ function ChatNewConnection() {
       await establish_connection(url);
       setOpen(false);
       console.log(url);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setConnectionError(error);
     }
   };
 
@@ -82,6 +92,27 @@ function ChatNewConnection() {
         <ModalDialog>
           <DialogTitle>Connect to new server</DialogTitle>
           <DialogContent>Fill in the information of the server.</DialogContent>
+          {connectionError && (
+            <Alert
+              variant="soft"
+              color="danger"
+              sx={{ mb: 2 }}
+              endDecorator={
+                <IconButton
+                  variant="plain"
+                  onClick={dismissError}
+                  sx={{
+                    '--IconButton-size': '32px',
+                    transform: 'translate(0.5rem, -0.5rem)',
+                  }}
+                >
+                  <Close />
+                </IconButton>
+              }
+            >
+              {connectionError}
+            </Alert>
+          )}
           <form onSubmit={handleSubmit}>
             <Stack spacing={2}>
               <Grid container spacing={1}>
