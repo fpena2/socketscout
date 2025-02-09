@@ -3,16 +3,52 @@ use chrono::{DateTime, Utc};
 use futures::StreamExt;
 use kameo::actor::ActorRef;
 use serde::Serialize;
-use tauri::{ipc::Channel, AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, State};
 use tokio_tungstenite::{connect_async, tungstenite};
 
 type SharedState = ActorRef<AppState>;
+
+#[derive(Debug, Default, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ChatMessage {
+    sender: String,
+    sender_avatar: Option<String>,
+    content: String,
+    timestamp: String,
+}
+
+impl ChatMessage {
+    fn new(sender: String) -> Self {
+        ChatMessage {
+            sender,
+            sender_avatar: None,
+            content: String::new(),
+            timestamp: Utc::now().to_rfc3339(),
+        }
+    }
+}
+
+#[derive(Debug, Default, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Chat {
+    address: String,
+    messages: Vec<ChatMessage>,
+}
+
+impl Chat {
+    fn new(address: String) -> Self {
+        Chat {
+            address,
+            messages: Vec::new(),
+        }
+    }
+}
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase", tag = "event", content = "data")]
 pub enum ServerEvent {
     #[serde(rename_all = "camelCase")]
-    Connected { name: String },
+    Connected { name: Chat },
     #[serde(rename_all = "camelCase")]
     Disconnected { name: String },
     #[serde(rename_all = "camelCase")]
@@ -41,9 +77,9 @@ pub async fn send_message(
 
 #[tauri::command]
 pub async fn establish_connection(
+    app: AppHandle,
     state: State<'_, SharedState>,
     address: &str,
-    on_event: Channel<ServerEvent>,
 ) -> Result<(), String> {
     let (ws_stream, _) = connect_async(address)
         .await
@@ -55,11 +91,14 @@ pub async fn establish_connection(
 
     // Tell the frontend that the connection was successful.
     // Store connection in state so that we can send messages to it later.
-    on_event
-        .send(ServerEvent::Connected {
-            name: address.clone(),
-        })
-        .unwrap();
+    app.emit(
+        "server-event-connected",
+        ServerEvent::Connected {
+            name: Chat::new(address.clone()),
+        },
+    )
+    .unwrap();
+
     state
         .tell(InsertConnection {
             address: address.clone(),
@@ -75,13 +114,15 @@ pub async fn establish_connection(
                 Ok(msg) => {
                     log::info!("Received: {:?}", msg);
                     if let tungstenite::Message::Text(content) = msg {
-                        on_event
-                            .send(ServerEvent::Message {
+                        app.emit(
+                            "server-event-message",
+                            ServerEvent::Message {
                                 name: address.clone(),
                                 message: content.to_string(),
                                 received_at: DateTime::from(Utc::now()),
-                            })
-                            .unwrap();
+                            },
+                        )
+                        .unwrap();
                     }
                 }
                 Err(e) => {

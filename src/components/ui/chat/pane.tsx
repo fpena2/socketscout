@@ -1,13 +1,13 @@
 import { Box, Chip, Input, List, Sheet, Stack, Typography } from '@mui/joy';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
-import { ChatProps } from '@/types';
+import { Chat } from '@/types';
 import { ChatList, ChatNewConnection } from '.';
 
 type ChatsPaneProps = {
-  chats: ChatProps[];
-  selectedChat: ChatProps | null;
-  setSelectedChat: (chat: ChatProps) => void;
+  chats: Chat[];
+  selectedChat: Chat;
+  setSelectedChat: (chat: Chat) => void;
 };
 
 function ChatsPane(props: ChatsPaneProps) {

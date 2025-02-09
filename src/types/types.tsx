@@ -1,63 +1,33 @@
-type UserProps = {
-  name: string;
-  username: string;
-  online: boolean;
-};
-
-type MessageProps = {
-  id: string;
+type ChatMessage = {
+  sender: string;
+  senderAvatar?: string;
   content: string;
   timestamp: string;
-  unread?: boolean;
-  sender: UserProps | 'You';
-  attachment?: {
-    fileName: string;
-    type: string;
-    size: string;
-  };
 };
 
-type ChatProps = {
-  id: string;
-  sender: UserProps;
-  messages: MessageProps[];
+type Chat = {
+  address: string;
+  messages: ChatMessage[];
 };
 
-type ChatBubbleProps = MessageProps & {
-  variant: 'sent' | 'received';
+type ServerEventConnected = {
+  name: Chat;
 };
-
-type ActiveChats = {
-  names: string[];
+type ServerEventDisconnected = {
+  name: string;
 };
-
-type ServerEvent =
-  | {
-    event: 'connected';
-    data: {
-      name: string;
-    };
-  }
-  | {
-    event: 'disconnected';
-    data: {
-      name: string;
-    };
-  }
-  | {
-    event: 'message';
-    data: {
-      name: string;
-      message: string;
-      received_at: string;
-    };
-  };
+type ServerEventMessage = {
+  name: string;
+  message: string;
+  received_at: string;
+};
 
 export type {
-  ServerEvent,
-  UserProps,
-  MessageProps,
-  ChatProps,
-  ChatBubbleProps,
-  ActiveChats,
+  // Events
+  ServerEventMessage,
+  ServerEventDisconnected,
+  ServerEventConnected,
+  //
+  Chat,
+  ChatMessage,
 };

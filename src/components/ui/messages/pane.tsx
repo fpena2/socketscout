@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import { ChatBubble } from '@/components/ui/chat';
 import { MessagesInput, MessagesPaneHeader } from '.';
-import { ChatProps, MessageProps } from '@/types';
+import { Chat, ChatMessage } from '@/types';
 
 function EmptyMessagesPane() {
   return (
@@ -25,13 +25,12 @@ function EmptyMessagesPane() {
   );
 }
 
-type MessagesPaneProps = {
-  chat: ChatProps | null;
-};
+interface MessagesPaneProps {
+  chat: Chat;
+}
 
-function MessagesPane(props: MessagesPaneProps) {
-  const { chat } = props;
-  if (!chat) {
+function MessagesPane({ chat }: MessagesPaneProps) {
+  if (!chat || Object.keys(chat).length === 0) {
     return <EmptyMessagesPane />;
   }
 
@@ -51,7 +50,7 @@ function MessagesPane(props: MessagesPaneProps) {
         backgroundColor: 'background.level1',
       }}
     >
-      <MessagesPaneHeader sender={chat.sender} />
+      <MessagesPaneHeader address={chat.address} />
       <Box
         sx={{
           display: 'flex',
@@ -64,7 +63,7 @@ function MessagesPane(props: MessagesPaneProps) {
         }}
       >
         <Stack spacing={2} sx={{ justifyContent: 'flex-end' }}>
-          {chatMessages.map((message: MessageProps, index: number) => {
+          {chatMessages.map((message: ChatMessage, index: number) => {
             const isYou = message.sender === 'You';
             return (
               <Stack
@@ -74,12 +73,9 @@ function MessagesPane(props: MessagesPaneProps) {
                 sx={{ flexDirection: isYou ? 'row-reverse' : 'row' }}
               >
                 {message.sender !== 'You' && (
-                  <Avatar src={message.sender.avatar} />
+                  <Avatar src={message.senderAvatar} />
                 )}
-                <ChatBubble
-                  variant={isYou ? 'sent' : 'received'}
-                  {...message}
-                />
+                <ChatBubble {...message} />
               </Stack>
             );
           })}
@@ -94,7 +90,7 @@ function MessagesPane(props: MessagesPaneProps) {
           setChatMessages([
             ...chatMessages,
             {
-              id: newIdString,
+              // id: newIdString,
               sender: 'You',
               content: textAreaValue,
               timestamp: 'Just now',

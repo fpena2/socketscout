@@ -1,20 +1,34 @@
 import * as React from 'react';
 import Sheet from '@mui/joy/Sheet';
-import { ChatProps } from '@/types';
+import { listen } from '@tauri-apps/api/event';
+
 import { ChatsPane } from '@/components/ui/chat';
 import { MessagesPane } from '@/components/ui/messages';
+import {
+  Chat,
+  ServerEventMessage,
+  ServerEventDisconnected,
+  ServerEventConnected,
+} from '@/types';
 
 function MessageApp() {
-  const [chatsData, setChatsData] = React.useState<ChatProps[]>([]);
-  const [selectedChat, setSelectedChat] = React.useState<ChatProps | null>(
-    null,
-  );
+  const [chats, setChats] = React.useState<Chat[]>([]);
+  const [selectedChat, setSelectedChat] = React.useState<Chat>({} as Chat);
 
-  React.useEffect(() => {
-    if (chatsData.length > 0) {
-      setSelectedChat(chatsData[0]);
+  listen<ServerEventConnected>('server-event-connected', (event) => {
+    if (event.id > 0) {
+      console.log('Server connected');
+      console.log(event.payload);
+      // const { name } = event.payload as ServerEventConnected;
+      // setChats((prev) => [...prev, { name: name }]);
     }
-  }, [chatsData]);
+  });
+
+  // React.useEffect(() => {
+  //   if (chatsData.length > 0) {
+  //     setSelectedChat(chatsData[0]);
+  //   }
+  // }, [chatsData]);
 
   return (
     <Sheet
@@ -44,7 +58,7 @@ function MessageApp() {
         }}
       >
         <ChatsPane
-          chats={chatsData}
+          chats={chats}
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
         />

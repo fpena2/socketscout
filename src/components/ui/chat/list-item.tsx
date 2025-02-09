@@ -12,12 +12,12 @@ import {
   List,
 } from '@mui/joy';
 
-import { ChatProps, MessageProps, UserProps } from '@/types';
+import { Chat } from '@/types';
 
 type ChatListProps = {
-  chats: ChatProps[];
-  selectedChat: ChatProps | null;
-  setSelectedChat: (chat: ChatProps) => void;
+  chats: Chat[];
+  selectedChat: Chat;
+  setSelectedChat: (chat: Chat) => void;
 };
 
 function ChatList(props: ChatListProps) {
@@ -30,53 +30,55 @@ function ChatList(props: ChatListProps) {
         '--ListItem-paddingX': '1rem',
       }}
     >
-      {chats.map((chat) => (
-        <ChatListItem
-          key={chat.id}
-          {...chat}
-          // TODO: Fix the error
-          selectedChat={selectedChat}
-          setSelectedChat={setSelectedChat}
-        />
-      ))}
+      {chats.map((chat, index) => {
+        // We have to use self and the "previous" chat to determine if this element
+        // is currently selected.
+
+        // FIXME: add an UUID to the chat object
+        const isSelected = chat.address === selectedChat.address;
+        return (
+          <ChatListItem
+            key={index}
+            self={chat}
+            isSelected={isSelected}
+            setSelectedChat={setSelectedChat}
+          />
+        );
+      })}
     </List>
   );
 }
 
 type ChatListItemProps = ListItemButtonProps & {
-  id: string;
-  unread?: boolean;
-  sender: UserProps;
-  messages: MessageProps[];
-  selectedChat?: ChatProps;
-  setSelectedChat: (chat: ChatProps) => void;
+  self: Chat;
+  isSelected: boolean;
+  setSelectedChat: (chat: Chat) => void;
 };
 
 function ChatListItem(props: ChatListItemProps) {
-  const { id, sender, messages, selectedChat, setSelectedChat } = props;
-  const selected = selectedChat?.id === id;
-  const latestMessage = messages[0]; // Get the latest message safely
+  const { self, isSelected, setSelectedChat } = props;
+  const latestMessage = self.messages[0];
 
   return (
     <React.Fragment>
       <ListItem>
         <ListItemButton
           onClick={() => {
-            setSelectedChat({ id, sender, messages });
+            setSelectedChat(self);
           }}
-          selected={selected}
+          selected={isSelected}
           color='neutral'
           sx={{ flexDirection: 'column', alignItems: 'initial', gap: 1 }}
         >
           <Stack direction='row' spacing={1.5}>
-            <Avatar src={sender.avatar} />
+            {/* <Avatar src={self.senderAvatar} /> */}
             <Box sx={{ flex: 1 }}>
-              <Typography level='title-sm'>{sender.name}</Typography>
+              <Typography level='title-sm'>{self.address}</Typography>
             </Box>
             <Box sx={{ lineHeight: 1.5, textAlign: 'right' }}>
-              {latestMessage?.unread && (
+              {/* {latestMessage?.unread && (
                 <CircleIcon sx={{ fontSize: 12 }} color='primary' />
-              )}
+              )} */}
               <Typography
                 level='body-xs'
                 noWrap

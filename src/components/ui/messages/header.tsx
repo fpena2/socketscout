@@ -3,14 +3,12 @@ import Avatar from '@mui/joy/Avatar';
 import IconButton from '@mui/joy/IconButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
-import { UserProps } from '../../../types/types';
 
-type MessagesPaneHeaderProps = {
-  sender: UserProps;
-};
+interface MessagesPaneHeaderProps {
+  address: string;
+}
 
-function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
-  const { sender } = props;
+function MessagesPaneHeader({ address }: MessagesPaneHeaderProps) {
   return (
     <Stack
       direction='row'
@@ -34,7 +32,7 @@ function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
           noWrap
           sx={{ fontWeight: 'lg', fontSize: 'lg' }}
         >
-          {sender.name}
+          {address}
         </Typography>
       </Stack>
       <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>

@@ -44,7 +44,6 @@ function ChatNewConnection() {
       const url = new URL(connectionType + ipAddress + ':' + port);
       await establish_connection(url);
       setOpen(false);
-      console.log(url);
     } catch (error: any) {
       setConnectionError(error);
     }
