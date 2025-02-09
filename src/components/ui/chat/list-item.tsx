@@ -16,7 +16,7 @@ import { Chat } from '@/types';
 
 type ChatListProps = {
   chats: Chat[];
-  selectedChat: Chat;
+  selectedChat: Chat | null;
   setSelectedChat: (chat: Chat) => void;
 };
 
@@ -30,21 +30,24 @@ function ChatList(props: ChatListProps) {
         '--ListItem-paddingX': '1rem',
       }}
     >
-      {chats.map((chat, index) => {
-        // We have to use self and the "previous" chat to determine if this element
-        // is currently selected.
+      {chats &&
+        chats.length > 0 &&
+        chats.map((chat: Chat, index: number) => {
+          // We have to use self and the "previous" chat to determine if this element
+          // is currently selected.
 
-        // FIXME: add an UUID to the chat object
-        const isSelected = chat.address === selectedChat.address;
-        return (
-          <ChatListItem
-            key={index}
-            self={chat}
-            isSelected={isSelected}
-            setSelectedChat={setSelectedChat}
-          />
-        );
-      })}
+          // FIXME: add an UUID to the chat object
+          const isSelected =
+            selectedChat !== null && chat.address === selectedChat.address;
+          return (
+            <ChatListItem
+              key={index}
+              self={chat}
+              isSelected={isSelected}
+              setSelectedChat={setSelectedChat}
+            />
+          );
+        })}
     </List>
   );
 }
@@ -57,7 +60,8 @@ type ChatListItemProps = ListItemButtonProps & {
 
 function ChatListItem(props: ChatListItemProps) {
   const { self, isSelected, setSelectedChat } = props;
-  const latestMessage = self.messages[0];
+  const latestMessage =
+    self.messages && self.messages.length > 0 ? self.messages[0] : null;
 
   return (
     <React.Fragment>
@@ -98,7 +102,7 @@ function ChatListItem(props: ChatListItemProps) {
               textOverflow: 'ellipsis',
             }}
           >
-            {latestMessage?.content}
+            {latestMessage?.content ?? 'No messages'}
           </Typography>
         </ListItemButton>
       </ListItem>

@@ -92,7 +92,7 @@ pub async fn establish_connection(
     // Tell the frontend that the connection was successful.
     // Store connection in state so that we can send messages to it later.
     app.emit(
-        "server-event-connected",
+        "server-connected",
         ServerEvent::Connected {
             name: Chat::new(address.clone()),
         },

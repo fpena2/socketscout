@@ -13,23 +13,15 @@ import {
 
 function MessageApp() {
   const [chats, setChats] = React.useState<Chat[]>([]);
-  const [selectedChat, setSelectedChat] = React.useState<Chat>({} as Chat);
+  const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
 
-  listen<ServerEventConnected>('server-event-connected', (event) => {
-    if (event.id > 0) {
-      console.log('Server connected');
-      console.log(event.payload);
-      // const { name } = event.payload as ServerEventConnected;
-      // setChats((prev) => [...prev, { name: name }]);
-    }
+  listen<ServerEventConnected>('server-connected', (event) => {
+    // NOTE: somehow typescript shows an error here when accessing the event payload
+    let chat = event.payload.data.name as Chat;
+    // console.log('server-event-connected chat:' , chat);
+    setChats((prev) => [...prev, chat]);
   });
-
-  // React.useEffect(() => {
-  //   if (chatsData.length > 0) {
-  //     setSelectedChat(chatsData[0]);
-  //   }
-  // }, [chatsData]);
-
+  
   return (
     <Sheet
       sx={{

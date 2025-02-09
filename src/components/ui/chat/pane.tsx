@@ -6,7 +6,7 @@ import { ChatList, ChatNewConnection } from '.';
 
 type ChatsPaneProps = {
   chats: Chat[];
-  selectedChat: Chat;
+  selectedChat: Chat | null;
   setSelectedChat: (chat: Chat) => void;
 };
 

@@ -26,7 +26,7 @@ function EmptyMessagesPane() {
 }
 
 interface MessagesPaneProps {
-  chat: Chat;
+  chat: Chat | null;
 }
 
 function MessagesPane({ chat }: MessagesPaneProps) {
