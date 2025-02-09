@@ -10,9 +10,25 @@ import {
   Stack,
   Typography,
   List,
+  AspectRatio,
+  Card,
+  Skeleton,
 } from '@mui/joy';
 
 import { ChatProps, MessageProps, UserProps } from '@/types';
+
+function BasicSkeleton() {
+  return (
+    <Card variant='outlined' sx={{ width: 343, display: 'flex', gap: 2 }}>
+      <Typography>
+        <Skeleton>
+          This is a placeholder text commonly used in the graphic, print, and
+          publishing industries.
+        </Skeleton>
+      </Typography>
+    </Card>
+  );
+}
 
 type ChatListProps = {
   chats: ChatProps[];
@@ -22,6 +38,28 @@ type ChatListProps = {
 
 function ChatList(props: ChatListProps) {
   const { chats, selectedChat, setSelectedChat } = props;
+
+  // If selectedChat is null, show BasicSkeleton
+  if (selectedChat === null) {
+    return (
+      <List
+        sx={{
+          py: 0,
+          '--ListItem-paddingY': '0.75rem',
+          '--ListItem-paddingX': '1rem',
+        }}
+      >
+        {/* Render multiple BasicSkeletons as needed */}
+        {Array.from({ length: 1 }).map((_, index) => (
+          <ListItem key={index}>
+            <BasicSkeleton />
+            <ListDivider sx={{ margin: 0 }} />
+          </ListItem>
+        ))}
+      </List>
+    );
+  }
+
   return (
     <List
       sx={{

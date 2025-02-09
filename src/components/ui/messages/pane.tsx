@@ -7,6 +7,7 @@ import * as React from 'react';
 import { ChatBubble } from '@/components/ui/chat';
 import { MessagesInput, MessagesPaneHeader } from '.';
 import { ChatProps, MessageProps } from '@/types';
+import { Typography } from '@mui/joy';
 
 function EmptyMessagesPane() {
   return (
@@ -20,7 +21,7 @@ function EmptyMessagesPane() {
         textAlign: 'center',
       }}
     >
-      <p>No messages available. Start the conversation!</p>
+      <Typography>No messages available. Open a new connection!</Typography>
     </Box>
   );
 }
