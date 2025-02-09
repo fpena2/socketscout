@@ -34,6 +34,7 @@ function ChatList(props: ChatListProps) {
         <ChatListItem
           key={chat.id}
           {...chat}
+          // TODO: Fix the error
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
         />

@@ -12,10 +12,6 @@ use tokio_tungstenite::{connect_async, tungstenite};
 
 type SharedState = ActorRef<AppState>;
 
-struct ActiveConnections {
-    connections: HashMap<String, Vec<String>>,
-}
-
 #[tauri::command]
 pub async fn active_connections(state: State<'_, SharedState>) -> Result<Vec<String>, String> {
     let connections = state.ask(GetConnections).await.unwrap();
@@ -86,7 +82,7 @@ pub async fn establish_connection(
                     }
                 }
                 Err(e) => {
-                    eprintln!("Error while receiving message: {:?}", e);
+                    log::info!("Error while receiving message: {:?}", e);
                     break;
                 }
             }
