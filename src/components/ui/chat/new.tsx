@@ -24,7 +24,7 @@ function ChatNewConnection() {
   const [open, setOpen] = React.useState<boolean>(false);
 
   // Connection protocol, IP address, and port State
-  const [connectionType, setCconnectionType] = React.useState('ws://');
+  const [connectionType, setConnectionType] = React.useState('ws://');
   const [ipAddress, setIpAddress] = React.useState('127.0.0.1');
   const [ipError, setIpError] = React.useState<boolean>(false);
   const [port, setPort] = React.useState<number>(8080);
@@ -114,7 +114,7 @@ function ChatNewConnection() {
                         <Select
                           variant='plain'
                           value={connectionType}
-                          onChange={(_, value) => setCconnectionType(value!)}
+                          onChange={(_, value) => setConnectionType(value!)}
                         >
                           <Option value='ws://'>ws://</Option>
                           <Option value='sws://'>sws://</Option>
