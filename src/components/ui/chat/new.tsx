@@ -20,36 +20,20 @@ import React from 'react';
 import { establish_connection } from '@/api/status';
 import Close from '@mui/icons-material/Close';
 
-const validateIpAddress = (ip: string) => {
-  const parts = ip.split('.');
-  return (
-    parts.length === 4 &&
-    parts.every((part) => {
-      const num = parseInt(part, 10);
-      return num >= 0 && num <= 255 && part.length > 0;
-    })
-  );
-};
-
-const validatePort = (port: number) => {
-  return port >= 0 && port <= 65535;
-};
-
 function ChatNewConnection() {
   const [open, setOpen] = React.useState<boolean>(false);
-  const [connectionType, setCconnectionType] = React.useState('ws://');
 
+  // Connection protocol, IP address, and port State
+  const [connectionType, setCconnectionType] = React.useState('ws://');
   const [ipAddress, setIpAddress] = React.useState('127.0.0.1');
   const [ipError, setIpError] = React.useState<boolean>(false);
-
   const [port, setPort] = React.useState<number>(8080);
   const [portError, setPortError] = React.useState<boolean>(false);
 
-  const [connectionError, setConnectionError] = React.useState<string | null>(null);
-
-  const dismissError = () => {
-    setConnectionError(null);
-  };
+  // Connection Error State
+  const [connectionError, setConnectionError] = React.useState<string | null>(
+    null,
+  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -65,17 +49,18 @@ function ChatNewConnection() {
       setConnectionError(error);
     }
   };
-
   const handleIpChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newIp = event.target.value;
     setIpAddress(newIp);
     setIpError(!validateIpAddress(newIp));
   };
-
   const handlePortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPort = parseInt(event.target.value, 10);
     setPort(newPort);
     setPortError(!validatePort(newPort));
+  };
+  const dismissError = () => {
+    setConnectionError(null);
   };
 
   return (
@@ -94,12 +79,12 @@ function ChatNewConnection() {
           <DialogContent>Fill in the information of the server.</DialogContent>
           {connectionError && (
             <Alert
-              variant="soft"
-              color="danger"
+              variant='soft'
+              color='danger'
               sx={{ mb: 2 }}
               endDecorator={
                 <IconButton
-                  variant="plain"
+                  variant='plain'
                   onClick={dismissError}
                   sx={{
                     '--IconButton-size': '32px',
@@ -157,5 +142,20 @@ function ChatNewConnection() {
     </React.Fragment>
   );
 }
+
+const validateIpAddress = (ip: string) => {
+  const parts = ip.split('.');
+  return (
+    parts.length === 4 &&
+    parts.every((part) => {
+      const num = parseInt(part, 10);
+      return num >= 0 && num <= 255 && part.length > 0;
+    })
+  );
+};
+
+const validatePort = (port: number) => {
+  return port >= 0 && port <= 65535;
+};
 
 export { ChatNewConnection };

@@ -1,7 +1,6 @@
 type UserProps = {
   name: string;
   username: string;
-  avatar: string;
   online: boolean;
 };
 
@@ -28,4 +27,37 @@ type ChatBubbleProps = MessageProps & {
   variant: 'sent' | 'received';
 };
 
-export type { UserProps, MessageProps, ChatProps, ChatBubbleProps };
+type ActiveChats = {
+  names: string[];
+};
+
+type ServerEvent =
+  | {
+    event: 'connected';
+    data: {
+      name: string;
+    };
+  }
+  | {
+    event: 'disconnected';
+    data: {
+      name: string;
+    };
+  }
+  | {
+    event: 'message';
+    data: {
+      name: string;
+      message: string;
+      received_at: string;
+    };
+  };
+
+export type {
+  ServerEvent,
+  UserProps,
+  MessageProps,
+  ChatProps,
+  ChatBubbleProps,
+  ActiveChats,
+};

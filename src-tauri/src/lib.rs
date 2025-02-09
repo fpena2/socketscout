@@ -5,7 +5,7 @@ mod actors;
 mod cmd;
 
 use actors::state::AppState;
-use cmd::{active_connections, establish_connection, send_message};
+use cmd::{establish_connection, send_message};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
