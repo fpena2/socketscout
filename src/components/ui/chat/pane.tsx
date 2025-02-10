@@ -40,7 +40,7 @@ function ChatsPane(props: ChatsPaneProps) {
               size='md'
               slotProps={{ root: { component: 'span' } }}
             >
-              4
+              {chats.length}
             </Chip>
           }
           sx={{
