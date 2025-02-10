@@ -12,14 +12,14 @@ import {
 } from '@/types';
 
 function MessageApp() {
-  const [chats, setChats] = React.useState<Chat[]>([]);
+  const [chats, setChats] = React.useState<Set<Chat>>(new Set());
   const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
 
   listen<ServerEventConnected>('server-connected', (event) => {
     // NOTE: somehow typescript shows an error here when accessing the event payload
     let chat = event.payload.data.name as Chat;
     // console.log('server-event-connected chat:' , chat);
-    setChats((prev) => [...prev, chat]);
+    setChats((prev) => new Set([...prev, chat]));
   });
 
   return (
@@ -50,7 +50,7 @@ function MessageApp() {
         }}
       >
         <ChatsPane
-          chats={chats}
+          chats={Array.from(chats)}
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
         />

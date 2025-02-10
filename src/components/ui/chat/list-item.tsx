@@ -35,10 +35,8 @@ function ChatList(props: ChatListProps) {
         chats.map((chat: Chat, index: number) => {
           // We have to use self and the "previous" chat to determine if this element
           // is currently selected.
-
-          // FIXME: add an UUID to the chat object
           const isSelected =
-            selectedChat !== null && chat.address === selectedChat.address;
+            selectedChat !== null && chat.uuid === selectedChat.uuid;
           return (
             <ChatListItem
               key={index}

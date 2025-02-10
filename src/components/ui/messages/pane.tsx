@@ -34,14 +34,14 @@ function MessagesPane({ chat }: MessagesPaneProps) {
     return <EmptyMessagesPane />;
   }
 
-  const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>(chat.messages);
+  const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>(
+    chat.messages,
+  );
   const [textAreaValue, setTextAreaValue] = React.useState<string>('');
 
   React.useEffect(() => {
     setChatMessages(chat.messages);
   }, [chat.messages]);
-
-  console.log(chat);
 
   return (
     <Sheet
