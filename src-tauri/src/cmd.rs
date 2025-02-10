@@ -1,10 +1,11 @@
-use crate::actors::state::{AppState, InsertConnection, SendMessage};
+use crate::actors::state::{AppState, InsertConnection};
 use chrono::{DateTime, Utc};
 use futures::StreamExt;
 use kameo::actor::ActorRef;
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, State};
 use tokio_tungstenite::{connect_async, tungstenite};
+use uuid::Uuid;
 
 type SharedState = ActorRef<AppState>;
 
@@ -31,14 +32,16 @@ impl ChatMessage {
 #[derive(Debug, Default, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Chat {
+    uuid: Uuid,
     address: String,
     messages: Vec<ChatMessage>,
 }
 
 impl Chat {
-    fn new(address: String) -> Self {
+    fn new(address: String, uuid: Uuid) -> Self {
         Chat {
             address,
+            uuid,
             messages: Vec::new(),
         }
     }
@@ -59,21 +62,21 @@ pub enum ServerEvent {
     },
 }
 
-#[tauri::command]
-pub async fn send_message(
-    state: State<'_, SharedState>,
-    address: String,
-    message: String,
-) -> Result<(), String> {
-    state
-        .tell(SendMessage {
-            address,
-            content: message,
-        })
-        .await
-        .unwrap();
-    Ok(())
-}
+// #[tauri::command]
+// pub async fn send_message(
+//     state: State<'_, SharedState>,
+//     address: String,
+//     message: String,
+// ) -> Result<(), String> {
+//     state
+//         .tell(SendMessage {
+//             address,
+//             content: message,
+//         })
+//         .await
+//         .unwrap();
+//     Ok(())
+// }
 
 #[tauri::command]
 pub async fn establish_connection(
@@ -91,10 +94,11 @@ pub async fn establish_connection(
 
     // Tell the frontend that the connection was successful.
     // Store connection in state so that we can send messages to it later.
+    let id = Uuid::new_v4();
     app.emit(
         "server-connected",
         ServerEvent::Connected {
-            name: Chat::new(address.clone()),
+            name: Chat::new(address.clone(), id),
         },
     )
     .unwrap();
@@ -102,6 +106,7 @@ pub async fn establish_connection(
     state
         .tell(InsertConnection {
             address: address.clone(),
+            id,
             connection: write,
         })
         .await

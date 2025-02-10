@@ -34,12 +34,14 @@ function MessagesPane({ chat }: MessagesPaneProps) {
     return <EmptyMessagesPane />;
   }
 
-  const [chatMessages, setChatMessages] = React.useState(chat.messages);
-  const [textAreaValue, setTextAreaValue] = React.useState('');
+  const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>(chat.messages);
+  const [textAreaValue, setTextAreaValue] = React.useState<string>('');
 
   React.useEffect(() => {
     setChatMessages(chat.messages);
   }, [chat.messages]);
+
+  console.log(chat);
 
   return (
     <Sheet
@@ -50,7 +52,7 @@ function MessagesPane({ chat }: MessagesPaneProps) {
         backgroundColor: 'background.level1',
       }}
     >
-      <MessagesPaneHeader address={chat.address} />
+      <MessagesPaneHeader uuid={chat.uuid} address={chat.address} />
       <Box
         sx={{
           display: 'flex',

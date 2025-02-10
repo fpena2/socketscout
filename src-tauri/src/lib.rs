@@ -5,7 +5,7 @@ mod actors;
 mod cmd;
 
 use actors::state::AppState;
-use cmd::{establish_connection, send_message};
+use cmd::establish_connection; //, send_message};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -25,7 +25,7 @@ pub async fn run() {
         .invoke_handler(tauri::generate_handler![
             // active_connections,
             establish_connection,
-            send_message
+            // send_message
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

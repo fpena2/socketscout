@@ -5,10 +5,11 @@ import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 
 interface MessagesPaneHeaderProps {
+  uuid: string;
   address: string;
 }
 
-function MessagesPaneHeader({ address }: MessagesPaneHeaderProps) {
+function MessagesPaneHeader({ uuid, address }: MessagesPaneHeaderProps) {
   return (
     <Stack
       direction='row'
@@ -27,13 +28,16 @@ function MessagesPaneHeader({ address }: MessagesPaneHeaderProps) {
         sx={{ alignItems: 'center' }}
       >
         <Avatar size='lg' />
-        <Typography
-          component='h2'
-          noWrap
-          sx={{ fontWeight: 'lg', fontSize: 'lg' }}
-        >
-          {address}
-        </Typography>
+        <div>
+          <Typography
+            component='h2'
+            noWrap
+            sx={{ fontWeight: 'lg', fontSize: 'lg' }}
+          >
+            {address}
+          </Typography>
+          <Typography level='body-sm'>{uuid}</Typography>
+        </div>
       </Stack>
       <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
         <IconButton size='sm' variant='plain' color='neutral'>

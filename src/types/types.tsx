@@ -6,6 +6,7 @@ type ChatMessage = {
 };
 
 type Chat = {
+  uuid: string;
   address: string;
   messages: ChatMessage[];
 };
