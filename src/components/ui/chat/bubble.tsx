@@ -1,8 +1,7 @@
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
 import { Avatar, Box, Sheet, Stack, Typography } from '@mui/joy';
 
-import { ChatBubbleProps, ChatMessage } from '@/types';
-
+import { ChatMessage } from '@/types';
 
 function ChatBubble(props: ChatMessage) {
   const { content, timestamp, sender } = props;

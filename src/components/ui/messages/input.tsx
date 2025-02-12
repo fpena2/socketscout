@@ -67,7 +67,7 @@ function MessagesInput(props: MessageInputProps) {
           }}
           sx={{
             '& textarea:first-of-type': {
-              minHeight: 72,
+              minHeight: 50,
             },
           }}
         />
