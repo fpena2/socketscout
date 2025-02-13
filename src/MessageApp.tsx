@@ -17,8 +17,8 @@ function MessageApp() {
 
   listen<ServerEventConnected>('server-connected', (event) => {
     // NOTE: somehow typescript shows an error here when accessing the event payload
-    let chat = event.payload.data.name as Chat;
-    // console.log('server-event-connected chat:' , chat);
+    let connected_event: ServerEventConnected = event.payload.data;
+    let chat: Chat = connected_event.chat;
     setChats((prev) => new Set([...prev, chat]));
   });
 

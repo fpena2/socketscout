@@ -8,23 +8,6 @@ import { ChatBubble } from '@/components/ui/chat';
 import { MessagesInput, MessagesPaneHeader } from '.';
 import { Chat, ChatMessage } from '@/types';
 
-function EmptyMessagesPane() {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-        color: 'text.secondary',
-        textAlign: 'center',
-      }}
-    >
-      <p>No messages available. Start the conversation!</p>
-    </Box>
-  );
-}
-
 interface MessagesPaneProps {
   chat: Chat | null;
 }
@@ -101,6 +84,23 @@ function MessagesPane({ chat }: MessagesPaneProps) {
         }}
       />
     </Sheet>
+  );
+}
+
+function EmptyMessagesPane() {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        color: 'text.secondary',
+        textAlign: 'center',
+      }}
+    >
+      <p>No messages available. Start the conversation!</p>
+    </Box>
   );
 }
 

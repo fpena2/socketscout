@@ -51,12 +51,12 @@ impl Chat {
 #[serde(rename_all = "camelCase", tag = "event", content = "data")]
 pub enum ServerEvent {
     #[serde(rename_all = "camelCase")]
-    Connected { name: Chat },
+    Connected { chat: Chat },
     #[serde(rename_all = "camelCase")]
-    Disconnected { name: String },
+    Disconnected { chat_uuid: String },
     #[serde(rename_all = "camelCase")]
     Message {
-        name: String,
+        chat_uuid: String,
         message: String,
         received_at: DateTime<Utc>,
     },
@@ -98,7 +98,7 @@ pub async fn establish_connection(
     app.emit(
         "server-connected",
         ServerEvent::Connected {
-            name: Chat::new(address.clone(), id),
+            chat: Chat::new(address.clone(), id),
         },
     )
     .unwrap();
@@ -120,9 +120,9 @@ pub async fn establish_connection(
                     log::info!("Received: {:?}", msg);
                     if let tungstenite::Message::Text(content) = msg {
                         app.emit(
-                            "server-event-message",
+                            "server-recv-message",
                             ServerEvent::Message {
-                                name: address.clone(),
+                                chat_uuid: id.to_string(),
                                 message: content.to_string(),
                                 received_at: DateTime::from(Utc::now()),
                             },

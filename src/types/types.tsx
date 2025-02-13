@@ -11,8 +11,11 @@ type Chat = {
   messages: ChatMessage[];
 };
 
+//
+// Server Side Events
+//
 type ServerEventConnected = {
-  name: Chat;
+  chat: Chat;
 };
 type ServerEventDisconnected = {
   name: string;
@@ -24,11 +27,11 @@ type ServerEventMessage = {
 };
 
 export type {
-  // Events
+  Chat,
+  // Server Events
   ServerEventMessage,
   ServerEventDisconnected,
   ServerEventConnected,
-  //
-  Chat,
+  // User Events
   ChatMessage,
 };

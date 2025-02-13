@@ -1,3 +1,6 @@
+# Python env
+.env
+
 # Logs
 logs
 *.log
