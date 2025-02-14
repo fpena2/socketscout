@@ -4,23 +4,20 @@ import { listen } from '@tauri-apps/api/event';
 
 import { ChatsPane } from '@/components/ui/chat';
 import { MessagesPane } from '@/components/ui/messages';
-import {
-  Chat,
-  ServerEventMessage,
-  ServerEventDisconnected,
-  ServerEventConnected,
-} from '@/types';
+import { Chat, ServerChatsEvent } from '@/types';
 
 function MessageApp() {
   const [chats, setChats] = React.useState<Set<Chat>>(new Set());
   const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
 
-  listen<ServerEventConnected>('server-connected', (event) => {
+  listen<ServerChatsEvent>('server-chats-event', (event) => {
     // NOTE: somehow typescript shows an error here when accessing the event payload
-    let connected_event: ServerEventConnected = event.payload.data;
+    let connected_event: ServerChatsEvent = event.payload.data;
     let chat: Chat = connected_event.chat;
     setChats((prev) => new Set([...prev, chat]));
   });
+
+  console.log('loaded');
 
   return (
     <Sheet

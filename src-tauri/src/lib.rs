@@ -1,20 +1,21 @@
 use log::LevelFilter;
 use tauri_plugin_log::{Target, TargetKind};
 
-mod actors;
-mod cmd;
+mod commands;
+mod connections;
+mod database;
 
-use actors::state::AppState;
-use cmd::establish_connection; //, send_message};
+use commands::establish_connection;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
-    // TODO: upgrade to ActorPool
-    let actor_ref = kameo::spawn(AppState::default());
+    let state = connections::Store::default();
+    let db = database::Store::new();
 
     // Start Tauri task
     tauri::Builder::default()
-        .manage(actor_ref)
+        .manage(state)
+        .manage(db)
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_log::Builder::new()
@@ -22,11 +23,7 @@ pub async fn run() {
                 .level(LevelFilter::Info)
                 .build(),
         )
-        .invoke_handler(tauri::generate_handler![
-            // active_connections,
-            establish_connection,
-            // send_message
-        ])
+        .invoke_handler(tauri::generate_handler![establish_connection,])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

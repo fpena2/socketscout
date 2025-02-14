@@ -1,37 +1,25 @@
 type ChatMessage = {
   sender: string;
-  senderAvatar?: string;
+  receiver: string;
   content: string;
   timestamp: string;
 };
 
 type Chat = {
   uuid: string;
-  address: string;
+  server_address: string;
   messages: ChatMessage[];
 };
 
 //
 // Server Side Events
 //
-type ServerEventConnected = {
-  chat: Chat;
-};
-type ServerEventDisconnected = {
-  name: string;
-};
-type ServerEventMessage = {
-  name: string;
-  message: string;
-  received_at: string;
+type ServerChatsEvent = {
+  chats: Chat[];
 };
 
 export type {
   Chat,
-  // Server Events
-  ServerEventMessage,
-  ServerEventDisconnected,
-  ServerEventConnected,
-  // User Events
+  ServerChatsEvent,
   ChatMessage,
 };
