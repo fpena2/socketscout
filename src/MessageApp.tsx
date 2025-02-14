@@ -1,21 +1,29 @@
 import * as React from 'react';
 import Sheet from '@mui/joy/Sheet';
 import { listen } from '@tauri-apps/api/event';
-
+import { invoke } from '@tauri-apps/api/core';
 import { ChatsPane } from '@/components/ui/chat';
 import { MessagesPane } from '@/components/ui/messages';
-import { Chat, ServerChatsEvent } from '@/types';
+import { Chat, AllChatsEvent } from '@/types';
 
 function MessageApp() {
-  const [chats, setChats] = React.useState<Set<Chat>>(new Set());
+  const [chats, setChats] = React.useState<Map<string, Chat>>(new Map());
   const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
 
-  listen<ServerChatsEvent>('all-chats-event', (event) => {
+  listen<AllChatsEvent>('all-chats-event', (event) => {
     // NOTE: somehow typescript shows an error here when accessing the event payload
-    let event_data: ServerChatsEvent = event.payload.data;
-    let chats: Chat[] = event_data.chats;
-    setChats((prev) => new Set([...prev, ...chats]));
+    let event_data: AllChatsEvent = event.payload.data;
+    let newChats: Chat[] = event_data.chats;
+    setChats((prev) => {
+      const updatedChats = new Map(prev);
+      newChats.forEach((chat) => updatedChats.set(chat.uuid, chat));
+      return updatedChats;
+    });
   });
+
+  React.useEffect(() => {
+    invoke('get_all_chats');
+  }, []);
 
   return (
     <Sheet
@@ -45,7 +53,7 @@ function MessageApp() {
         }}
       >
         <ChatsPane
-          chats={Array.from(chats)}
+          chats={Array.from(chats.values())}
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
         />

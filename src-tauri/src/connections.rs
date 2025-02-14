@@ -25,15 +25,11 @@ impl Default for Store {
 }
 
 impl Store {
-    pub async fn add_connection(
-        &self,
-        id: uuid::Uuid,
-        connection: (String, SinkWssStream),
-    ) -> anyhow::Result<()> {
+    pub async fn add_connection(&self, id: uuid::Uuid, connection: (String, SinkWssStream)) {
         let mut connections = self.connections.write().await;
         connections.insert(id, connection);
-        Ok(())
     }
+
     pub async fn get_connections_ids(&self) -> Vec<events::ChatResponse> {
         let connections = self.connections.read().await;
         connections

@@ -6,7 +6,7 @@ mod connections;
 mod database;
 mod events;
 
-use commands::establish_connection;
+use commands::{establish_connection, get_all_chats, get_chat_messages};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -24,7 +24,11 @@ pub async fn run() {
                 .level(LevelFilter::Info)
                 .build(),
         )
-        .invoke_handler(tauri::generate_handler![establish_connection,])
+        .invoke_handler(tauri::generate_handler![
+            establish_connection,
+            get_all_chats,
+            get_chat_messages
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

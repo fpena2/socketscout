@@ -3,10 +3,12 @@ import Box from '@mui/joy/Box';
 import Sheet from '@mui/joy/Sheet';
 import Stack from '@mui/joy/Stack';
 import * as React from 'react';
+import { listen } from '@tauri-apps/api/event';
+import { invoke } from '@tauri-apps/api/core';
 
 import { ChatBubble } from '@/components/ui/chat';
 import { MessagesInput, MessagesPaneHeader } from '.';
-import { Chat, ChatMessage } from '@/types';
+import { Chat, ChatMessage, ChatMessageEvent } from '@/types';
 
 interface MessagesPaneProps {
   chat: Chat | null;
@@ -17,14 +19,20 @@ function MessagesPane({ chat }: MessagesPaneProps) {
     return <EmptyMessagesPane />;
   }
 
-  const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>(
-    chat.messages,
-  );
+  const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>([]);
   const [textAreaValue, setTextAreaValue] = React.useState<string>('');
 
+  listen<ChatMessageEvent>('chat-message-event', (event) => {
+    let event_data: ChatMessageEvent = event.payload.data;
+    let message: ChatMessage = event_data.message;
+    if (message.chat_uuid === chat.uuid) {
+      setChatMessages((messages) => [...messages, message]);
+    }
+  });
+
   React.useEffect(() => {
-    setChatMessages(chat.messages);
-  }, [chat.messages]);
+    invoke('get_all_chats', { uuid: chat.uuid });
+  }, []);
 
   return (
     <Sheet
@@ -57,9 +65,7 @@ function MessagesPane({ chat }: MessagesPaneProps) {
                 spacing={2}
                 sx={{ flexDirection: isYou ? 'row-reverse' : 'row' }}
               >
-                {message.sender !== 'You' && (
-                  <Avatar src={message.senderAvatar} />
-                )}
+                {message.sender !== 'You' && <Avatar />}
                 <ChatBubble {...message} />
               </Stack>
             );
@@ -70,13 +76,12 @@ function MessagesPane({ chat }: MessagesPaneProps) {
         textAreaValue={textAreaValue}
         setTextAreaValue={setTextAreaValue}
         onSubmit={() => {
-          const newId = chatMessages.length + 1;
-          const newIdString = newId.toString();
           setChatMessages([
             ...chatMessages,
             {
-              // id: newIdString,
+              chat_uuid: '0',
               sender: 'You',
+              receiver: 'Server',
               content: textAreaValue,
               timestamp: 'Just now',
             },

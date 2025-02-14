@@ -1,5 +1,4 @@
 use futures::{stream::SplitStream, StreamExt};
-use serde::Serialize;
 use tauri::{AppHandle, Emitter, State};
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};
 use uuid::Uuid;
@@ -8,6 +7,43 @@ use crate::{connections, database, events};
 
 type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
+
+#[tauri::command]
+pub async fn get_all_chats(
+    app: AppHandle,
+    con: State<'_, connections::Store>,
+) -> Result<(), String> {
+    let chats = con.inner().get_connections_ids().await;
+    app.emit(
+        "all-chats-event",
+        events::EventsFromServer::AllChats { chats: chats },
+    )
+    .unwrap();
+
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn get_chat_messages(
+    app: AppHandle,
+    db: State<'_, database::Store>,
+    uudi: String,
+) -> Result<(), String> {
+    let uuid = Uuid::parse_str(&uudi).unwrap();
+    match db.get_messages(uuid).await {
+        Some(messages) => {
+            app.emit(
+                "chat-messages-event",
+                events::EventsFromServer::ChatMessages { messages },
+            )
+            .unwrap();
+        }
+        None => {
+            log::error!("Chat not found for uuid: {}", uuid);
+        }
+    };
+    Ok(())
+}
 
 #[tauri::command]
 pub async fn establish_connection(
@@ -30,16 +66,12 @@ pub async fn establish_connection(
     {
         con.inner()
             .add_connection(uuid, (address.clone(), write))
-            .await
-            .map_err(|e| e.to_string())?;
+            .await;
     }
 
     // Open a new chat
     {
-        db.inner()
-            .add_chat(uuid, database::Chat::new(uuid, address.clone()))
-            .await
-            .map_err(|e| e.to_string())?;
+        db.inner().start_chat(uuid).await;
     }
 
     // Notify the front-end that the chat has been stated
@@ -54,6 +86,7 @@ pub async fn establish_connection(
 
     // Collect messages from server
     tokio::spawn(receive_server_message(
+        app,
         uuid,
         address,
         read,
@@ -64,6 +97,7 @@ pub async fn establish_connection(
 }
 
 async fn receive_server_message(
+    app: AppHandle,
     uuid: Uuid,
     address: String,
     mut read: SplitWssStream,
@@ -75,22 +109,20 @@ async fn receive_server_message(
                 log::info!("Received: {:?}", msg);
                 if let tungstenite::Message::Text(content) = msg {
                     {
-                        let mut chat = match db.get(uuid).await {
-                            Some(chat) => chat,
-                            None => {
-                                log::error!("Chat not found for uuid: {}", uuid);
-                                break;
-                            }
-                        };
-
-                        let message = database::Message::new(
+                        let message = events::MessagesResponse::new(
+                            uuid,
                             address.to_string(),
                             "You".to_string(),
                             content.to_string(),
                             chrono::Utc::now(),
                         );
 
-                        chat.add_message(message);
+                        db.add_message(uuid, message.clone()).await;
+                        app.emit(
+                            "chat-message-event",
+                            events::EventsFromServer::ChatMessage { message },
+                        )
+                        .unwrap();
                     }
                 }
             }

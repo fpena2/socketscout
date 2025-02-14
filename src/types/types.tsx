@@ -1,4 +1,5 @@
 type ChatMessage = {
+  chat_uuid: string;
   sender: string;
   receiver: string;
   content: string;
@@ -17,4 +18,12 @@ type AllChatsEvent = {
   chats: Chat[];
 };
 
-export type { Chat, AllChatsEvent as ServerChatsEvent, ChatMessage };
+type ChatMessagesEvent = {
+  messages: ChatMessage[];
+};
+
+type ChatMessageEvent = {
+  message: ChatMessage;
+};
+
+export type { Chat, AllChatsEvent, ChatMessageEvent, ChatMessage };
