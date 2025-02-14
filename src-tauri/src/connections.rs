@@ -10,8 +10,10 @@ type SinkWssStream = SplitSink<
     tungstenite::Message,
 >;
 
+use crate::events;
+
 pub struct Store {
-    connections: Arc<RwLock<HashMap<uuid::Uuid, SinkWssStream>>>,
+    connections: Arc<RwLock<HashMap<uuid::Uuid, (String, SinkWssStream)>>>,
 }
 
 impl Default for Store {
@@ -26,10 +28,17 @@ impl Store {
     pub async fn add_connection(
         &self,
         id: uuid::Uuid,
-        connection: SinkWssStream,
+        connection: (String, SinkWssStream),
     ) -> anyhow::Result<()> {
         let mut connections = self.connections.write().await;
         connections.insert(id, connection);
         Ok(())
+    }
+    pub async fn get_connections_ids(&self) -> Vec<events::ChatResponse> {
+        let connections = self.connections.read().await;
+        connections
+            .iter()
+            .map(|(id, (address, _))| events::ChatResponse::new(id.clone(), address.clone()))
+            .collect()
     }
 }

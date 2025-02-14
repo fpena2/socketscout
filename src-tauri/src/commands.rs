@@ -1,16 +1,17 @@
 use futures::{stream::SplitStream, StreamExt};
-use tauri::{AppHandle, State};
+use serde::Serialize;
+use tauri::{AppHandle, Emitter, State};
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};
 use uuid::Uuid;
 
-use crate::{connections, database};
+use crate::{connections, database, events};
 
 type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
 
 #[tauri::command]
 pub async fn establish_connection(
-    _app: AppHandle,
+    app: AppHandle,
     con: State<'_, connections::Store>,
     db: State<'_, database::Store>,
     address: &str,
@@ -28,17 +29,27 @@ pub async fn establish_connection(
     let uuid = Uuid::new_v4();
     {
         con.inner()
-            .add_connection(uuid, write)
+            .add_connection(uuid, (address.clone(), write))
             .await
             .map_err(|e| e.to_string())?;
     }
 
-    // Store the connection in the database so that we can keep track of the messages.
+    // Open a new chat
     {
         db.inner()
             .add_chat(uuid, database::Chat::new(uuid, address.clone()))
             .await
             .map_err(|e| e.to_string())?;
+    }
+
+    // Notify the front-end that the chat has been stated
+    {
+        let chats = con.inner().get_connections_ids().await;
+        app.emit(
+            "all-chats-event",
+            events::EventsFromServer::AllChats { chats: chats },
+        )
+        .unwrap();
     }
 
     // Collect messages from server

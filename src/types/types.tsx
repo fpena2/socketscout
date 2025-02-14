@@ -7,19 +7,14 @@ type ChatMessage = {
 
 type Chat = {
   uuid: string;
-  server_address: string;
-  messages: ChatMessage[];
+  address: string;
 };
 
 //
 // Server Side Events
 //
-type ServerChatsEvent = {
+type AllChatsEvent = {
   chats: Chat[];
 };
 
-export type {
-  Chat,
-  ServerChatsEvent,
-  ChatMessage,
-};
+export type { Chat, AllChatsEvent as ServerChatsEvent, ChatMessage };

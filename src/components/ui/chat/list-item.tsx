@@ -40,7 +40,7 @@ function ChatList(props: ChatListProps) {
           return (
             <ChatListItem
               key={index}
-              self={chat}
+              thisChat={chat}
               isSelected={isSelected}
               setSelectedChat={setSelectedChat}
             />
@@ -51,22 +51,19 @@ function ChatList(props: ChatListProps) {
 }
 
 type ChatListItemProps = ListItemButtonProps & {
-  self: Chat;
+  thisChat: Chat;
   isSelected: boolean;
   setSelectedChat: (chat: Chat) => void;
 };
 
 function ChatListItem(props: ChatListItemProps) {
-  const { self, isSelected, setSelectedChat } = props;
-  const latestMessage =
-    self.messages && self.messages.length > 0 ? self.messages[0] : null;
-
+  const { thisChat, isSelected, setSelectedChat } = props;
   return (
     <React.Fragment>
       <ListItem>
         <ListItemButton
           onClick={() => {
-            setSelectedChat(self);
+            setSelectedChat(thisChat);
           }}
           selected={isSelected}
           color='neutral'
@@ -75,7 +72,8 @@ function ChatListItem(props: ChatListItemProps) {
           <Stack direction='row' spacing={1.5}>
             {/* <Avatar src={self.senderAvatar} /> */}
             <Box sx={{ flex: 1 }}>
-              <Typography level='title-sm'>{self.address}</Typography>
+              <Typography level='title-sm'>{thisChat.address}</Typography>
+              <Typography level='title-sm'>{thisChat.uuid}</Typography>
             </Box>
             <Box sx={{ lineHeight: 1.5, textAlign: 'right' }}>
               {/* {latestMessage?.unread && (
@@ -90,18 +88,6 @@ function ChatListItem(props: ChatListItemProps) {
               </Typography>
             </Box>
           </Stack>
-          <Typography
-            level='body-sm'
-            sx={{
-              display: '-webkit-box',
-              WebkitLineClamp: '2',
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {latestMessage?.content ?? 'No messages'}
-          </Typography>
         </ListItemButton>
       </ListItem>
       <ListDivider sx={{ margin: 0 }} />

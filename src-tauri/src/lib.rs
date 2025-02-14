@@ -4,6 +4,7 @@ use tauri_plugin_log::{Target, TargetKind};
 mod commands;
 mod connections;
 mod database;
+mod events;
 
 use commands::establish_connection;
 

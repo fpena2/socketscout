@@ -10,14 +10,12 @@ function MessageApp() {
   const [chats, setChats] = React.useState<Set<Chat>>(new Set());
   const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
 
-  listen<ServerChatsEvent>('server-chats-event', (event) => {
+  listen<ServerChatsEvent>('all-chats-event', (event) => {
     // NOTE: somehow typescript shows an error here when accessing the event payload
-    let connected_event: ServerChatsEvent = event.payload.data;
-    let chat: Chat = connected_event.chat;
-    setChats((prev) => new Set([...prev, chat]));
+    let event_data: ServerChatsEvent = event.payload.data;
+    let chats: Chat[] = event_data.chats;
+    setChats((prev) => new Set([...prev, ...chats]));
   });
-
-  console.log('loaded');
 
   return (
     <Sheet
