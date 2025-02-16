@@ -1,4 +1,5 @@
 use futures::stream::SplitSink;
+use futures::SinkExt;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -36,5 +37,14 @@ impl Store {
             .iter()
             .map(|(id, (address, _))| events::ChatResponse::new(id.clone(), address.clone()))
             .collect()
+    }
+
+    pub async fn close_connection(&self, id: uuid::Uuid) {
+        let mut connections = self.connections.write().await;
+        if let Some((addr, sink)) = connections.get_mut(&id) {
+            let _ = sink.send(tungstenite::Message::Close(None)).await;
+            log::info!("Closing connection with server: {addr} (ID: {id})");
+        }
+        connections.remove(&id);
     }
 }

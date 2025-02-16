@@ -6,8 +6,6 @@ mod connections;
 mod database;
 mod events;
 
-use commands::{establish_connection, get_all_chats, get_chat_messages};
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
     let state = connections::Store::default();
@@ -25,9 +23,10 @@ pub async fn run() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            establish_connection,
-            get_all_chats,
-            get_chat_messages
+            commands::establish_connection,
+            commands::get_all_chats,
+            commands::get_chat_messages,
+            commands::close_connection
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

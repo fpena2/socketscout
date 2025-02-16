@@ -29,7 +29,7 @@ pub async fn get_chat_messages(
     db: State<'_, database::Store>,
     uudi: String,
 ) -> Result<(), String> {
-    let uuid = Uuid::parse_str(&uudi).unwrap();
+    let uuid: Uuid = Uuid::parse_str(&uudi).unwrap();
     match db.get_messages(uuid).await {
         Some(messages) => {
             app.emit(
@@ -42,6 +42,17 @@ pub async fn get_chat_messages(
             log::error!("Chat not found for uuid: {}", uuid);
         }
     };
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn close_connection(
+    con: State<'_, connections::Store>,
+    uuid: &str,
+) -> Result<(), String> {
+    con.inner()
+        .close_connection(Uuid::parse_str(uuid).unwrap())
+        .await;
     Ok(())
 }
 

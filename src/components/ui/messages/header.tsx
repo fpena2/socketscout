@@ -3,6 +3,7 @@ import Avatar from '@mui/joy/Avatar';
 import IconButton from '@mui/joy/IconButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
+import { invoke } from '@tauri-apps/api/core';
 
 interface MessagesPaneHeaderProps {
   uuid: string;
@@ -10,6 +11,10 @@ interface MessagesPaneHeaderProps {
 }
 
 function MessagesPaneHeader({ uuid, address }: MessagesPaneHeaderProps) {
+  const handleDisconnect = () => {
+    invoke('close_connection', { uuid: uuid });
+  };
+
   return (
     <Stack
       direction='row'
@@ -41,7 +46,7 @@ function MessagesPaneHeader({ uuid, address }: MessagesPaneHeaderProps) {
       </Stack>
       <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
         <IconButton size='sm' variant='plain' color='neutral'>
-          <MoreVertRoundedIcon />
+          <MoreVertRoundedIcon onClick={handleDisconnect} />
         </IconButton>
       </Stack>
     </Stack>
