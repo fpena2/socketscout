@@ -84,7 +84,7 @@ function ChatListItem(props: ChatListItemProps) {
                 noWrap
                 sx={{ display: { xs: 'none', md: 'block' } }}
               >
-                5 mins ago
+                Connected
               </Typography>
             </Box>
           </Stack>

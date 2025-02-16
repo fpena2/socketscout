@@ -22,7 +22,7 @@ function MessageApp() {
   });
 
   React.useEffect(() => {
-    invoke('get_all_chats');
+    // invoke('get_all_chats');
   }, []);
 
   return (

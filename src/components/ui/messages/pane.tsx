@@ -19,20 +19,26 @@ function MessagesPane({ chat }: MessagesPaneProps) {
     return <EmptyMessagesPane />;
   }
 
-  const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>([]);
+  const [chatMessages, setChatMessages] = React.useState<Set<ChatMessage>>(
+    new Set(),
+  );
   const [textAreaValue, setTextAreaValue] = React.useState<string>('');
 
-  listen<ChatMessageEvent>('chat-message-event', (event) => {
-    let event_data: ChatMessageEvent = event.payload.data;
-    let message: ChatMessage = event_data.message;
-    if (message.chat_uuid === chat.uuid) {
-      setChatMessages((messages) => [...messages, message]);
-    }
-  });
-
   React.useEffect(() => {
-    invoke('get_all_chats', { uuid: chat.uuid });
-  }, []);
+    listen<ChatMessageEvent>('chat-message-event', (event) => {
+      let event_data: ChatMessageEvent = event.payload.data;
+      let message: ChatMessage = event_data.message;
+      if (message.chat_uuid === chat.uuid) {
+        setChatMessages((prev) => {
+          const newMessages = new Set(prev);
+          newMessages.add(message);
+          return newMessages;
+        });
+      }
+    });
+  }, [chat.uuid]);
+
+  console.log(Array.from(chatMessages));
 
   return (
     <Sheet
@@ -56,36 +62,39 @@ function MessagesPane({ chat }: MessagesPaneProps) {
         }}
       >
         <Stack spacing={2} sx={{ justifyContent: 'flex-end' }}>
-          {chatMessages.map((message: ChatMessage, index: number) => {
-            const isYou = message.sender === 'You';
-            return (
-              <Stack
-                key={index}
-                direction='row'
-                spacing={2}
-                sx={{ flexDirection: isYou ? 'row-reverse' : 'row' }}
-              >
-                {message.sender !== 'You' && <Avatar />}
-                <ChatBubble {...message} />
-              </Stack>
-            );
-          })}
+          {Array.from(chatMessages).map(
+            (message: ChatMessage, index: number) => {
+              const isYou = message.sender === 'You';
+              return (
+                <Stack
+                  key={index}
+                  direction='row'
+                  spacing={2}
+                  sx={{ flexDirection: isYou ? 'row-reverse' : 'row' }}
+                >
+                  {message.sender !== 'You' && <Avatar />}
+                  <ChatBubble {...message} />
+                </Stack>
+              );
+            },
+          )}
         </Stack>
       </Box>
       <MessagesInput
         textAreaValue={textAreaValue}
         setTextAreaValue={setTextAreaValue}
         onSubmit={() => {
-          setChatMessages([
-            ...chatMessages,
-            {
+          setChatMessages((prev) => {
+            const newMessages = new Set(prev);
+            newMessages.add({
               chat_uuid: '0',
               sender: 'You',
               receiver: 'Server',
               content: textAreaValue,
-              timestamp: 'Just now',
-            },
-          ]);
+              timestamp: new Date().toISOString(),
+            });
+            return newMessages;
+          });
         }}
       />
     </Sheet>
