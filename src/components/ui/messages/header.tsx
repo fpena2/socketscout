@@ -1,4 +1,4 @@
-import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import Avatar from '@mui/joy/Avatar';
 import IconButton from '@mui/joy/IconButton';
 import Stack from '@mui/joy/Stack';
@@ -46,7 +46,7 @@ function MessagesPaneHeader({ uuid, address }: MessagesPaneHeaderProps) {
       </Stack>
       <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
         <IconButton size='sm' variant='plain' color='neutral'>
-          <MoreVertRoundedIcon onClick={handleDisconnect} />
+          <DisabledByDefaultIcon onClick={handleDisconnect} />
         </IconButton>
       </Stack>
     </Stack>
