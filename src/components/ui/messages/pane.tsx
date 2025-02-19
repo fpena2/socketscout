@@ -11,11 +11,11 @@ import { MessagesInput, MessagesPaneHeader } from '.';
 import { Chat, ChatMessage, ChatMessageEvent } from '@/types';
 
 interface MessagesPaneProps {
-  chat: Chat | null;
+  selectedChat: Chat | null;
 }
 
-function MessagesPane({ chat }: MessagesPaneProps) {
-  if (!chat || Object.keys(chat).length === 0) {
+function MessagesPane({ selectedChat }: MessagesPaneProps) {
+  if (!selectedChat || Object.keys(selectedChat).length === 0) {
     return <EmptyMessagesPane />;
   }
 
@@ -28,7 +28,8 @@ function MessagesPane({ chat }: MessagesPaneProps) {
     listen<ChatMessageEvent>('chat-message-event', (event) => {
       let event_data: ChatMessageEvent = event.payload.data;
       let message: ChatMessage = event_data.message;
-      if (message.chat_uuid === chat.uuid) {
+      if (message.chat_uuid === selectedChat.uuid) {
+        console.log(message.chat_uuid + '===' + selectedChat.uuid);
         setChatMessages((prev) => {
           const newMessages = new Set(prev);
           newMessages.add(message);
@@ -36,7 +37,7 @@ function MessagesPane({ chat }: MessagesPaneProps) {
         });
       }
     });
-  }, [chat.uuid]);
+  }, [selectedChat.uuid]);
 
   console.log(Array.from(chatMessages));
 
@@ -49,7 +50,10 @@ function MessagesPane({ chat }: MessagesPaneProps) {
         backgroundColor: 'background.level1',
       }}
     >
-      <MessagesPaneHeader uuid={chat.uuid} address={chat.address} />
+      <MessagesPaneHeader
+        uuid={selectedChat.uuid}
+        address={selectedChat.address}
+      />
       <Box
         sx={{
           display: 'flex',

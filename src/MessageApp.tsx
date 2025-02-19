@@ -58,7 +58,7 @@ function MessageApp() {
           setSelectedChat={setSelectedChat}
         />
       </Sheet>
-      <MessagesPane chat={selectedChat} />
+      <MessagesPane selectedChat={selectedChat} />
     </Sheet>
   );
 }
