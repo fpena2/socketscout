@@ -95,6 +95,7 @@ pub async fn establish_connection(
         .unwrap();
     }
 
+    // FIXME: listen after the chat is opened by the user
     // Collect messages from server
     tokio::spawn(receive_server_message(
         app,

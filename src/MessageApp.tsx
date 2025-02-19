@@ -3,26 +3,28 @@ import Sheet from '@mui/joy/Sheet';
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
 import { ChatsPane } from '@/chat-panel';
-import { MessagesPane } from '@/chat-messages';
+import { MessagesPanel } from '@/chat-messages';
 import { Chat, AllChatsEvent } from '@/types';
 
 function MessageApp() {
   const [chats, setChats] = React.useState<Map<string, Chat>>(new Map());
   const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
 
-  listen<AllChatsEvent>('all-chats-event', (event) => {
-    // NOTE: somehow typescript shows an error here when accessing the event payload
-    let event_data: AllChatsEvent = event.payload.data;
-    let newChats: Chat[] = event_data.chats;
-    setChats((prev) => {
-      const updatedChats = new Map(prev);
-      newChats.forEach((chat) => updatedChats.set(chat.uuid, chat));
-      return updatedChats;
-    });
-  });
-
   React.useEffect(() => {
-    // invoke('get_all_chats');
+    const unlisten = listen<AllChatsEvent>('all-chats-event', (event) => {
+      // NOTE: somehow typescript shows an error here when accessing the event payload
+      let event_data: AllChatsEvent = event.payload.data;
+      let newChats: Chat[] = event_data.chats;
+      setChats((prev) => {
+        const updatedChats = new Map(prev);
+        newChats.forEach((chat) => updatedChats.set(chat.uuid, chat));
+        return updatedChats;
+      });
+    });
+
+    return () => {
+      unlisten.then((f) => f()).catch(console.error);
+    };
   }, []);
 
   return (
@@ -58,7 +60,7 @@ function MessageApp() {
           setSelectedChat={setSelectedChat}
         />
       </Sheet>
-      <MessagesPane selectedChat={selectedChat} />
+      <MessagesPanel selectedChat={selectedChat} />
     </Sheet>
   );
 }

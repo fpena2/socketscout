@@ -14,6 +14,7 @@ import {
 
 import { Chat } from '@/types';
 import { ChatListItem } from './chat-list-item';
+import ChatNotFound from '@/components/icons/chat-no-found';
 
 type ChatListProps = {
   chats: Chat[];
@@ -23,6 +24,24 @@ type ChatListProps = {
 
 function ChatList(props: ChatListProps) {
   const { chats, selectedChat, setSelectedChat } = props;
+
+  if (chats.length == 0) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '70vh', // FIXME: automatically adjust the height of the left panel
+        }}
+      >
+        <ChatNotFound />
+        <Typography>No connections found!</Typography>
+      </Box>
+    );
+  }
+
   return (
     <List
       sx={{

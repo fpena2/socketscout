@@ -9,14 +9,16 @@ import { invoke } from '@tauri-apps/api/core';
 import { ChatBubble } from './message-bubble';
 import { MessagesInput, MessagesPaneHeader } from '.';
 import { Chat, ChatMessage, ChatMessageEvent } from '@/types';
+import ConfusedPerson from '@/components/icons/confused-person';
+import { Typography } from '@mui/joy';
 
 interface MessagesPaneProps {
   selectedChat: Chat | null;
 }
 
-function MessagesPane({ selectedChat }: MessagesPaneProps) {
+function MessagesPanel({ selectedChat }: MessagesPaneProps) {
   if (!selectedChat || Object.keys(selectedChat).length === 0) {
-    return <EmptyMessagesPane />;
+    return <EmptyMessagesPanel />;
   }
 
   const [chatMessages, setChatMessages] = React.useState<Set<ChatMessage>>(
@@ -105,21 +107,21 @@ function MessagesPane({ selectedChat }: MessagesPaneProps) {
   );
 }
 
-function EmptyMessagesPane() {
+function EmptyMessagesPanel() {
   return (
     <Box
       sx={{
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100%',
-        color: 'text.secondary',
-        textAlign: 'center',
+        gap: '2%',
       }}
     >
-      <p>No messages available. Start the conversation!</p>
+      <ConfusedPerson />
+      <Typography>Select or start a new connection.</Typography>
     </Box>
   );
 }
 
-export { MessagesPane };
+export { MessagesPanel };
