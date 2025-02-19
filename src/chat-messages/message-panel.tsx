@@ -9,8 +9,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { ChatBubble } from './message-bubble';
 import { MessagesInput, MessagesPaneHeader } from '.';
 import { Chat, ChatMessage, ChatMessageEvent } from '@/types';
-import ConfusedPerson from '@/components/icons/confused-person';
-import { Typography } from '@mui/joy';
+import { EmptyMessagesPanel } from './no-messages-warn';
 
 interface MessagesPaneProps {
   selectedChat: Chat | null;
@@ -104,23 +103,6 @@ function MessagesPanel({ selectedChat }: MessagesPaneProps) {
         }}
       />
     </Sheet>
-  );
-}
-
-function EmptyMessagesPanel() {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '2%',
-      }}
-    >
-      <ConfusedPerson />
-      <Typography>Select or start a new connection.</Typography>
-    </Box>
   );
 }
 
