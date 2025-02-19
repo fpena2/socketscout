@@ -6,7 +6,7 @@ import * as React from 'react';
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
 
-import { ChatBubble } from '@/components/ui/chat';
+import { ChatBubble } from './message-bubble';
 import { MessagesInput, MessagesPaneHeader } from '.';
 import { Chat, ChatMessage, ChatMessageEvent } from '@/types';
 

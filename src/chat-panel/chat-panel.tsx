@@ -2,7 +2,8 @@ import { Box, Chip, Input, List, Sheet, Stack, Typography } from '@mui/joy';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 import { Chat } from '@/types';
-import { ChatList, ChatNewConnection } from '.';
+import { ChatList } from './chat-list';
+import { ChatNewConnection } from './new-chat';
 
 type ChatsPaneProps = {
   chats: Chat[];

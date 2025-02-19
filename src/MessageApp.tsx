@@ -2,8 +2,8 @@ import * as React from 'react';
 import Sheet from '@mui/joy/Sheet';
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
-import { ChatsPane } from '@/components/ui/chat';
-import { MessagesPane } from '@/components/ui/messages';
+import { ChatsPane } from '@/chat-panel';
+import { MessagesPane } from '@/chat-messages';
 import { Chat, AllChatsEvent } from '@/types';
 
 function MessageApp() {

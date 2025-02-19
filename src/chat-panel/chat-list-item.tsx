@@ -14,42 +14,6 @@ import {
 
 import { Chat } from '@/types';
 
-type ChatListProps = {
-  chats: Chat[];
-  selectedChat: Chat | null;
-  setSelectedChat: (chat: Chat) => void;
-};
-
-function ChatList(props: ChatListProps) {
-  const { chats, selectedChat, setSelectedChat } = props;
-  return (
-    <List
-      sx={{
-        py: 0,
-        '--ListItem-paddingY': '0.75rem',
-        '--ListItem-paddingX': '1rem',
-      }}
-    >
-      {chats &&
-        chats.length > 0 &&
-        chats.map((chat: Chat, index: number) => {
-          // We have to use self and the "previous" chat to determine if this element
-          // is currently selected.
-          const isSelected =
-            selectedChat !== null && chat.uuid === selectedChat.uuid;
-          return (
-            <ChatListItem
-              key={index}
-              thisChat={chat}
-              isSelected={isSelected}
-              setSelectedChat={setSelectedChat}
-            />
-          );
-        })}
-    </List>
-  );
-}
-
 type ChatListItemProps = ListItemButtonProps & {
   thisChat: Chat;
   isSelected: boolean;
@@ -77,8 +41,8 @@ function ChatListItem(props: ChatListItemProps) {
             </Box>
             <Box sx={{ lineHeight: 1.5, textAlign: 'right' }}>
               {/* {latestMessage?.unread && (
-                <CircleIcon sx={{ fontSize: 12 }} color='primary' />
-              )} */}
+                  <CircleIcon sx={{ fontSize: 12 }} color='primary' />
+                )} */}
               <Typography
                 level='body-xs'
                 noWrap
@@ -95,4 +59,4 @@ function ChatListItem(props: ChatListItemProps) {
   );
 }
 
-export { ChatList };
+export { ChatListItem };
