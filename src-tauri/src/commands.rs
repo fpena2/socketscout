@@ -3,24 +3,20 @@ use tauri::{AppHandle, Emitter, State};
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};
 use uuid::Uuid;
 
-use crate::{connections, database, events};
+use crate::{
+    connections, database,
+    events::{self, ChatResponse},
+};
 
 type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
 
 #[tauri::command]
-pub async fn get_all_chats(
-    app: AppHandle,
+pub async fn get_list_of_chats(
     con: State<'_, connections::Store>,
-) -> Result<(), String> {
+) -> Result<Vec<ChatResponse>, String> {
     let chats = con.inner().get_connections_ids().await;
-    app.emit(
-        "all-chats-event",
-        events::EventsFromServer::AllChats { chats: chats },
-    )
-    .unwrap();
-
-    Ok(())
+    Ok(chats)
 }
 
 #[tauri::command]
@@ -83,16 +79,6 @@ pub async fn establish_connection(
     // Open a new chat
     {
         db.inner().start_chat(uuid).await;
-    }
-
-    // Notify the front-end that the chat has been stated
-    {
-        let chats = con.inner().get_connections_ids().await;
-        app.emit(
-            "all-chats-event",
-            events::EventsFromServer::AllChats { chats: chats },
-        )
-        .unwrap();
     }
 
     // FIXME: listen after the chat is opened by the user

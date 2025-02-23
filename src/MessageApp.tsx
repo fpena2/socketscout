@@ -11,20 +11,17 @@ function MessageApp() {
   const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
 
   React.useEffect(() => {
-    const unlisten = listen<AllChatsEvent>('all-chats-event', (event) => {
-      // NOTE: somehow typescript shows an error here when accessing the event payload
-      let event_data: AllChatsEvent = event.payload.data;
-      let newChats: Chat[] = event_data.chats;
-      setChats((prev) => {
-        const updatedChats = new Map(prev);
-        newChats.forEach((chat) => updatedChats.set(chat.uuid, chat));
-        return updatedChats;
+    invoke<Chat[]>('get_list_of_chats')
+      .then((response) => {
+        const chatsMap = new Map<string, Chat>();
+        response.forEach((chat) => {
+          chatsMap.set(chat.uuid, chat);
+        });
+        setChats(chatsMap);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch chats:', error);
       });
-    });
-
-    return () => {
-      unlisten.then((f) => f()).catch(console.error);
-    };
   }, []);
 
   return (

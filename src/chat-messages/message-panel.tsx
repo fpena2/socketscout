@@ -25,21 +25,6 @@ function MessagesPanel({ selectedChat }: MessagesPaneProps) {
   );
   const [textAreaValue, setTextAreaValue] = React.useState<string>('');
 
-  React.useEffect(() => {
-    listen<ChatMessageEvent>('chat-message-event', (event) => {
-      let event_data: ChatMessageEvent = event.payload.data;
-      let message: ChatMessage = event_data.message;
-      if (message.chat_uuid === selectedChat.uuid) {
-        console.log(message.chat_uuid + '===' + selectedChat.uuid);
-        setChatMessages((prev) => {
-          const newMessages = new Set(prev);
-          newMessages.add(message);
-          return newMessages;
-        });
-      }
-    });
-  }, [selectedChat.uuid]);
-
   console.log(Array.from(chatMessages));
 
   return (

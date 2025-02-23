@@ -24,7 +24,7 @@ pub async fn run() {
         )
         .invoke_handler(tauri::generate_handler![
             commands::establish_connection,
-            commands::get_all_chats,
+            commands::get_list_of_chats,
             commands::get_chat_messages,
             commands::close_connection
         ])
