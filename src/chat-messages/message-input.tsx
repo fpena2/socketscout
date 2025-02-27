@@ -13,12 +13,12 @@ export type MessageInputProps = {
   onSubmit: () => void;
 };
 
-function MessagesInput(props: MessageInputProps) {
-  const { textAreaValue, setTextAreaValue, onSubmit } = props;
-  const textAreaRef = React.useRef<HTMLDivElement>(null);
+function MessagesInput() {
+  const [textAreaValue, setTextAreaValue] = React.useState<string>('');
+
   const handleClick = () => {
     if (textAreaValue.trim() !== '') {
-      onSubmit();
+      // onSubmit();
       setTextAreaValue('');
     }
   };
@@ -28,7 +28,6 @@ function MessagesInput(props: MessageInputProps) {
         <Textarea
           placeholder='Type something here…'
           aria-label='Message'
-          ref={textAreaRef}
           onChange={(event) => {
             setTextAreaValue(event.target.value);
           }}
@@ -51,7 +50,6 @@ function MessagesInput(props: MessageInputProps) {
               <div style={{ flexGrow: 1 }} />
               <Button
                 size='sm'
-                color='primary'
                 sx={{ alignSelf: 'center', borderRadius: 'sm' }}
                 endDecorator={<SendRoundedIcon />}
                 onClick={handleClick}
@@ -75,5 +73,21 @@ function MessagesInput(props: MessageInputProps) {
     </Box>
   );
 }
+
+// textAreaValue={textAreaValue}
+// setTextAreaValue={setTextAreaValue}
+// onSubmit={() => {
+//   setChatMessages((prev) => {
+//     const newMessages = new Set(prev);
+//     newMessages.add({
+//       chat_uuid: '0',
+//       sender: 'You',
+//       receiver: 'Server',
+//       content: textAreaValue,
+//       timestamp: new Date().toISOString(),
+//     });
+//     return newMessages;
+//   });
+// }}
 
 export { MessagesInput };

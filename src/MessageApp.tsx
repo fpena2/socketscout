@@ -5,10 +5,11 @@ import { invoke } from '@tauri-apps/api/core';
 import { ChatsPane } from '@/chat-panel';
 import { MessagesPanel } from '@/chat-messages';
 import { Chat, AllChatsEvent } from '@/types';
+import { useAtom } from 'jotai';
+import { chatsAtom, selectedChatAtom } from '@/stores/atoms';
 
 function MessageApp() {
-  const [chats, setChats] = React.useState<Map<string, Chat>>(new Map());
-  const [selectedChat, setSelectedChat] = React.useState<Chat | null>(null);
+  const [chats, setChats] = useAtom(chatsAtom);
 
   React.useEffect(() => {
     invoke<Chat[]>('get_list_of_chats')
@@ -51,13 +52,9 @@ function MessageApp() {
           top: 52,
         }}
       >
-        <ChatsPane
-          chats={Array.from(chats.values())}
-          selectedChat={selectedChat}
-          setSelectedChat={setSelectedChat}
-        />
+        <ChatsPane />
       </Sheet>
-      <MessagesPanel selectedChat={selectedChat} />
+      <MessagesPanel />
     </Sheet>
   );
 }

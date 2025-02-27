@@ -4,15 +4,11 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { Chat } from '@/types';
 import { ChatList } from './chat-list';
 import { ChatNewConnection } from './new-chat';
+import { chatsAtom, selectedChatAtom } from '@/stores/atoms';
+import { useAtom } from 'jotai';
 
-type ChatsPaneProps = {
-  chats: Chat[];
-  selectedChat: Chat | null;
-  setSelectedChat: (chat: Chat) => void;
-};
-
-function ChatsPane(props: ChatsPaneProps) {
-  const { chats, selectedChat, setSelectedChat } = props;
+function ChatsPane() {
+  const [chats] = useAtom(chatsAtom);
   return (
     <Sheet
       sx={{
@@ -41,7 +37,7 @@ function ChatsPane(props: ChatsPaneProps) {
               size='md'
               slotProps={{ root: { component: 'span' } }}
             >
-              {chats.length}
+              {Array.from(chats.values()).length}
             </Chip>
           }
           sx={{
@@ -62,11 +58,7 @@ function ChatsPane(props: ChatsPaneProps) {
           aria-label='Search'
         />
       </Box>
-      <ChatList
-        chats={chats}
-        selectedChat={selectedChat}
-        setSelectedChat={setSelectedChat}
-      />
+      <ChatList />
     </Sheet>
   );
 }

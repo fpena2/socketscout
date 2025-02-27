@@ -13,15 +13,17 @@ import {
 } from '@mui/joy';
 
 import { Chat } from '@/types';
+import { selectedChatAtom } from '@/stores/atoms';
+import { useAtom } from 'jotai';
 
 type ChatListItemProps = ListItemButtonProps & {
   thisChat: Chat;
   isSelected: boolean;
-  setSelectedChat: (chat: Chat) => void;
 };
 
 function ChatListItem(props: ChatListItemProps) {
-  const { thisChat, isSelected, setSelectedChat } = props;
+  const { thisChat, isSelected } = props;
+  const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
   return (
     <React.Fragment>
       <ListDivider inset={'gutter'} sx={{ margin: 0 }} />

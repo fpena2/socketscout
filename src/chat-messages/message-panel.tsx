@@ -10,22 +10,26 @@ import { ChatBubble } from './message-bubble';
 import { MessagesInput, MessagesPaneHeader } from '.';
 import { Chat, ChatMessage, ChatMessageEvent } from '@/types';
 import { EmptyMessagesPanel } from './no-messages-warn';
+import { selectedChatAtom } from '@/stores/atoms';
+import { useAtom } from 'jotai';
+import { useEffect, useState } from 'react';
 
-interface MessagesPaneProps {
-  selectedChat: Chat | null;
-}
+function MessagesPanel() {
+  const [selectedChat] = useAtom(selectedChatAtom);
+  const [messages, setMessages] = useState([]);
+  const [buffer, setBuffer] = useState([]);
 
-function MessagesPanel({ selectedChat }: MessagesPaneProps) {
-  if (!selectedChat || Object.keys(selectedChat).length === 0) {
+  if (!selectedChat) {
     return <EmptyMessagesPanel />;
   }
 
-  const [chatMessages, setChatMessages] = React.useState<Set<ChatMessage>>(
-    new Set(),
-  );
-  const [textAreaValue, setTextAreaValue] = React.useState<string>('');
-
-  console.log(Array.from(chatMessages));
+  useEffect(() => {
+    const debouncedUpdate = debounce(() => {
+      setMessages((prevMessages) => [...prevMessages, ...buffer]);
+      setBuffer([]);
+    }, 500);
+    debouncedUpdate();
+  }, [buffer]);
 
   return (
     <Sheet
@@ -36,10 +40,7 @@ function MessagesPanel({ selectedChat }: MessagesPaneProps) {
         backgroundColor: 'background.level1',
       }}
     >
-      <MessagesPaneHeader
-        uuid={selectedChat.uuid}
-        address={selectedChat.address}
-      />
+      <MessagesPaneHeader />
       <Box
         sx={{
           display: 'flex',
@@ -52,7 +53,7 @@ function MessagesPanel({ selectedChat }: MessagesPaneProps) {
         }}
       >
         <Stack spacing={2} sx={{ justifyContent: 'flex-end' }}>
-          {Array.from(chatMessages).map(
+          {/* {Array.from(chatMessages).map(
             (message: ChatMessage, index: number) => {
               const isYou = message.sender === 'You';
               return (
@@ -67,28 +68,24 @@ function MessagesPanel({ selectedChat }: MessagesPaneProps) {
                 </Stack>
               );
             },
-          )}
+          )} */}
         </Stack>
       </Box>
-      <MessagesInput
-        textAreaValue={textAreaValue}
-        setTextAreaValue={setTextAreaValue}
-        onSubmit={() => {
-          setChatMessages((prev) => {
-            const newMessages = new Set(prev);
-            newMessages.add({
-              chat_uuid: '0',
-              sender: 'You',
-              receiver: 'Server',
-              content: textAreaValue,
-              timestamp: new Date().toISOString(),
-            });
-            return newMessages;
-          });
-        }}
-      />
+      <MessagesInput />
     </Sheet>
   );
+}
+
+function debounce(func: Function, wait: number) {
+  let timeout: number | null = null;
+  return function (...args: any[]) {
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      func(...args);
+    }, wait);
+  };
 }
 
 export { MessagesPanel };

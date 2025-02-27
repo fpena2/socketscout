@@ -15,17 +15,16 @@ import {
 import { Chat } from '@/types';
 import { ChatListItem } from './chat-list-item';
 import ChatNotFound from '@/components/icons/chat-no-found';
+import { useAtom } from 'jotai';
+import { chatsAtom, selectedChatAtom } from '@/stores/atoms';
 
-type ChatListProps = {
-  chats: Chat[];
-  selectedChat: Chat | null;
-  setSelectedChat: (chat: Chat) => void;
-};
+function ChatList() {
+  const [chats] = useAtom(chatsAtom);
+  const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
 
-function ChatList(props: ChatListProps) {
-  const { chats, selectedChat, setSelectedChat } = props;
+  console.log(chats);
 
-  if (chats.length == 0) {
+  if (Array.from(chats.values()).length == 0) {
     return (
       <Box
         sx={{
@@ -50,22 +49,15 @@ function ChatList(props: ChatListProps) {
         '--ListItem-paddingX': '1rem',
       }}
     >
-      {chats &&
-        chats.length > 0 &&
-        chats.map((chat: Chat, index: number) => {
-          // We have to use self and the "previous" chat to determine if this element
-          // is currently selected.
-          const isSelected =
-            selectedChat !== null && chat.uuid === selectedChat.uuid;
-          return (
-            <ChatListItem
-              key={index}
-              thisChat={chat}
-              isSelected={isSelected}
-              setSelectedChat={setSelectedChat}
-            />
-          );
-        })}
+      {Array.from(chats.values()).map((chat: Chat, index: number) => {
+        // We have to use self and the "previous" chat to determine if this element
+        // is currently selected.
+        const isSelected =
+          selectedChat !== null && chat.uuid === selectedChat.uuid;
+        return (
+          <ChatListItem key={index} thisChat={chat} isSelected={isSelected} />
+        );
+      })}
     </List>
   );
 }

@@ -1,18 +1,17 @@
+import { selectedChatAtom } from '@/stores/atoms';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import Avatar from '@mui/joy/Avatar';
 import IconButton from '@mui/joy/IconButton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import { invoke } from '@tauri-apps/api/core';
+import { useAtom } from 'jotai';
 
-interface MessagesPaneHeaderProps {
-  uuid: string;
-  address: string;
-}
+function MessagesPaneHeader() {
+  const [selectedChat] = useAtom(selectedChatAtom);
 
-function MessagesPaneHeader({ uuid, address }: MessagesPaneHeaderProps) {
   const handleDisconnect = () => {
-    invoke('close_connection', { uuid: uuid });
+    invoke('close_connection', { uuid: selectedChat?.uuid });
   };
 
   return (
@@ -39,9 +38,9 @@ function MessagesPaneHeader({ uuid, address }: MessagesPaneHeaderProps) {
             noWrap
             sx={{ fontWeight: 'lg', fontSize: 'lg' }}
           >
-            {address}
+            {selectedChat?.address}
           </Typography>
-          <Typography level='body-sm'>{uuid}</Typography>
+          <Typography level='body-sm'>{selectedChat?.uuid}</Typography>
         </div>
       </Stack>
       <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
