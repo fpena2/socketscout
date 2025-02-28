@@ -11,7 +11,7 @@ function MessagesPaneHeader() {
   const [selectedChat] = useAtom(selectedChatAtom);
 
   const handleDisconnect = () => {
-    invoke('close_connection', { uuid: selectedChat?.uuid });
+    invoke('cmd_close_connection', { uuid: selectedChat?.uuid });
   };
 
   return (

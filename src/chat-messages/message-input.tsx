@@ -6,6 +6,10 @@ import Textarea from '@mui/joy/Textarea';
 import * as React from 'react';
 
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import { invoke } from '@tauri-apps/api/core';
+import { selectedChatAtom } from '@/stores/atoms';
+import { useAtom } from 'jotai';
+import { ChatMessage } from '@/types';
 
 export type MessageInputProps = {
   textAreaValue: string;
@@ -14,11 +18,20 @@ export type MessageInputProps = {
 };
 
 function MessagesInput() {
+  const [selectedChat] = useAtom(selectedChatAtom);
   const [textAreaValue, setTextAreaValue] = React.useState<string>('');
 
   const handleClick = () => {
     if (textAreaValue.trim() !== '') {
-      // onSubmit();
+      let uuid = selectedChat?.uuid;
+      let message: ChatMessage = {
+        chat_uuid: uuid ?? '',
+        sender: 'You',
+        receiver: 'Server',
+        content: textAreaValue,
+        timestamp: new Date().toISOString(),
+      };
+      invoke('cmd_send_message', { uuid, message });
       setTextAreaValue('');
     }
   };

@@ -31,9 +31,7 @@ function ChatNewConnection() {
   const [portError, setPortError] = React.useState<boolean>(false);
 
   // Connection Error State
-  const [connectionError, setConnectionError] = React.useState<string | null>(
-    null,
-  );
+  const [connectionError, setConnectionError] = React.useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

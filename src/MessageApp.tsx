@@ -12,7 +12,7 @@ function MessageApp() {
   const [chats, setChats] = useAtom(chatsAtom);
 
   React.useEffect(() => {
-    invoke<Chat[]>('get_list_of_chats')
+    invoke<Chat[]>('cmd_get_list_of_chats')
       .then((response) => {
         const chatsMap = new Map<string, Chat>();
         response.forEach((chat) => {
@@ -24,7 +24,7 @@ function MessageApp() {
         console.error('Failed to fetch chats:', error);
       });
   }, []);
-
+  
   return (
     <Sheet
       sx={{

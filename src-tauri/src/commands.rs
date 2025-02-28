@@ -12,7 +12,7 @@ type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
 
 #[tauri::command]
-pub async fn get_list_of_chats(
+pub async fn cmd_get_list_of_chats(
     con: State<'_, connections::Store>,
 ) -> Result<Vec<ChatResponse>, String> {
     let chats = con.inner().get_connections_ids().await;
@@ -20,7 +20,7 @@ pub async fn get_list_of_chats(
 }
 
 #[tauri::command]
-pub async fn get_chat_messages(
+pub async fn cmd_get_chat_messages(
     app: AppHandle,
     db: State<'_, database::Store>,
     uudi: String,
@@ -42,7 +42,19 @@ pub async fn get_chat_messages(
 }
 
 #[tauri::command]
-pub async fn close_connection(
+pub async fn cmd_send_message(
+    db: State<'_, database::Store>,
+    uuid: &str,
+    message: &str,
+) -> Result<(), String> {
+    let uuid = Uuid::parse_str(uuid).unwrap();
+    let message: events::MessagesResponse = serde_json::from_str(&message).unwrap();
+    db.inner().add_message(uuid, message).await;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn cmd_close_connection(
     con: State<'_, connections::Store>,
     uuid: &str,
 ) -> Result<(), String> {
@@ -53,7 +65,7 @@ pub async fn close_connection(
 }
 
 #[tauri::command]
-pub async fn establish_connection(
+pub async fn cmd_establish_connection(
     app: AppHandle,
     con: State<'_, connections::Store>,
     db: State<'_, database::Store>,

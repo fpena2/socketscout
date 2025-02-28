@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize)]
 pub struct ChatResponse {
@@ -12,7 +12,7 @@ impl ChatResponse {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct MessagesResponse {
     chat_uuid: uuid::Uuid,
     sender: String,
