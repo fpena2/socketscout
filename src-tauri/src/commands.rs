@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use futures::{stream::SplitStream, StreamExt};
 use tauri::{AppHandle, Emitter, State};
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};

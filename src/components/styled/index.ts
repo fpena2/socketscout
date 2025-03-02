@@ -1,14 +1,14 @@
 import { Paper } from '@mui/material';
 import { Box, styled } from '@mui/system';
 
-interface ContainerProps {} // Define props if needed, currently empty
+interface ContainerProps {}
 export const Container = styled(Box)<ContainerProps>(({ theme }) => ({
   display: 'flex',
   height: '100vh',
   backgroundColor: '#f5f5f5',
 }));
 
-interface SidebarProps {} // Define props if needed, currently empty
+interface SidebarProps {}
 export const Sidebar = styled(Box)<SidebarProps>(({ theme }) => ({
   width: 320,
   backgroundColor: '#fff',
@@ -18,14 +18,14 @@ export const Sidebar = styled(Box)<SidebarProps>(({ theme }) => ({
   },
 }));
 
-interface ChatAreaProps {} // Define props if needed, currently empty
+interface ChatAreaProps {}
 export const ChatArea = styled(Box)<ChatAreaProps>({
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
 });
 
-interface MessageContainerProps {} // Define props if needed, currently empty
+interface MessageContainerProps {}
 export const MessageContainer = styled(Box)<MessageContainerProps>({
   flex: 1,
   padding: '20px',
@@ -57,7 +57,7 @@ export const MessageBubble = styled(Paper, {
   position: 'relative',
 }));
 
-interface ChatHeaderProps {} // Define props if needed, currently empty
+interface ChatHeaderProps {}
 export const ChatHeader = styled(Box)<ChatHeaderProps>({
   padding: '15px',
   backgroundColor: '#fff',
@@ -67,7 +67,7 @@ export const ChatHeader = styled(Box)<ChatHeaderProps>({
   gap: '15px',
 });
 
-interface InputAreaProps {} // Define props if needed, currently empty
+interface InputAreaProps {}
 export const InputArea = styled(Box)<InputAreaProps>({
   padding: '20px',
   backgroundColor: '#fff',

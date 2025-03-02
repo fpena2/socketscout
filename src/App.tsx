@@ -2,8 +2,10 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Drawer,
   IconButton,
+  Stack,
   TextField,
   Theme,
   Typography,
@@ -60,6 +62,10 @@ const ChatUI: React.FC = () => {
     }
   };
 
+  const handleNewConversation = (): void => {
+    // Handle creating a new chat
+  };
+
   return (
     <Container>
       {isMobile && (
@@ -70,7 +76,12 @@ const ChatUI: React.FC = () => {
         </Drawer>
       )}
       <Sidebar>
-        <Typography variant='h5'>Conversations</Typography>
+        <Stack direction='row' justifyContent='space-between' sx={{ p: 2.3 }}>
+          <Typography variant='h5'>Conversations</Typography>
+          <Button variant='contained' onClick={handleNewConversation}>
+            New
+          </Button>
+        </Stack>
         <ConversationsList />
       </Sidebar>
       <ChatArea>
