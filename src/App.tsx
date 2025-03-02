@@ -62,8 +62,9 @@ const ChatUI: React.FC = () => {
     }
   };
 
-  const handleNewConversation = (): void => {
-    // Handle creating a new chat
+  const handleNewConversation = async (): Promise<void> => {
+    const result = await invoke('cmd_establish_connection', { address: 'http://localhost:8080' });
+    console.log(result);
   };
 
   return (
