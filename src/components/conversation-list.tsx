@@ -18,9 +18,7 @@ export const ConversationsList: React.FC = () => (
         <ListItemText
           primary={convo.peer}
           secondary={convo.uuid}
-          primaryTypographyProps={{
-            style: { fontWeight: 500 },
-          }}
+          slotProps={{ primary: { style: { fontWeight: 500 } } }}
         />
       </ListItemButton>
     ))}

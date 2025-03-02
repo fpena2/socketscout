@@ -15,6 +15,8 @@ import { BsCheck2All } from 'react-icons/bs';
 import { IoMenu, IoSend } from 'react-icons/io5';
 import { RiRadioButtonLine } from 'react-icons/ri';
 
+import { invoke } from '@tauri-apps/api/core';
+import { useAtom } from 'jotai';
 import { ConversationsList } from './components/conversation-list';
 import { conversations, messages } from './components/mock-data';
 import {
@@ -27,12 +29,29 @@ import {
   MessageContainer,
   Sidebar,
 } from './components/styled';
+import { chatsAtom } from './stores/atoms';
+import { ConversationCmdType } from './types';
 
 const ChatUI: React.FC = () => {
   const [message, setMessage] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const theme = useTheme<Theme>();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [chats, setChats] = useAtom(chatsAtom);
+  React.useEffect(() => {
+    invoke<ConversationCmdType[]>('cmd_get_conversations_list')
+      .then((response) => {
+        const chatsMap = new Map<string, ConversationCmdType>();
+        response.forEach((chat) => {
+          chatsMap.set(chat.uuid, chat);
+        });
+        setChats(chatsMap);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch chats:', error);
+      });
+  }, []);
 
   const handleSend = (): void => {
     if (message.trim()) {
@@ -86,7 +105,7 @@ const ChatUI: React.FC = () => {
           {messages.map((msg) => (
             <Message key={msg.uuid} sent={msg.sent_by_client}>
               <MessageBubble sent={msg.sent_by_client} elevation={1}>
-                <Typography>{msg.text}</Typography>
+                <Typography>{msg.content}</Typography>
                 <Typography
                   variant='caption'
                   style={{

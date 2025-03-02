@@ -18,17 +18,17 @@ export const conversations: ConversationCmdType[] = [
 export const messages: MessageCmdType[] = [
   {
     uuid: '1',
-    text: 'Hi there!',
-    receiver: 'peer1',
-    sender: 'peer2',
+    content: 'Hi there!',
+    // receiver: 'peer1',
+    // sender: 'peer2',
     timestamp: '10:00 AM',
     sent_by_client: true,
   },
   {
     uuid: '2',
-    text: 'Hello! How are you?',
-    receiver: 'peer1',
-    sender: 'peer2',
+    content: 'Hello! How are you?',
+    // receiver: 'peer1',
+    // sender: 'peer2',
     timestamp: '10:02 AM',
     sent_by_client: false,
   },

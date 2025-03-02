@@ -7,7 +7,7 @@ use crate::events;
 
 #[derive(Debug, Default, Clone)]
 pub struct Store {
-    chats_db: Arc<RwLock<HashMap<Uuid, Vec<events::MessagesResponse>>>>,
+    chats_db: Arc<RwLock<HashMap<Uuid, Vec<events::MessageCmdType>>>>,
 }
 
 impl Store {
@@ -21,14 +21,14 @@ impl Store {
         db.insert(key, Vec::new());
     }
 
-    pub async fn add_message(&self, key: Uuid, message: events::MessagesResponse) {
+    pub async fn add_message(&self, key: Uuid, message: events::MessageCmdType) {
         let mut db = self.chats_db.write().await;
         if let Some(chat) = db.get_mut(&key) {
             chat.push(message);
         }
     }
 
-    pub async fn get_messages(&self, key: Uuid) -> Option<Vec<events::MessagesResponse>> {
+    pub async fn get_messages(&self, key: Uuid) -> Option<Vec<events::MessageCmdType>> {
         let db = self.chats_db.read().await;
         db.get(&key).cloned()
     }

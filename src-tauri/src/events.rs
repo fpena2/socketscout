@@ -1,39 +1,43 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize)]
-pub struct ChatResponse {
+pub struct ConversationCmdType {
     uuid: uuid::Uuid,
-    address: String,
+    peer: String,
+    online: bool,
+    avatar: String,
 }
 
-impl ChatResponse {
-    pub fn new(uuid: uuid::Uuid, address: String) -> Self {
-        ChatResponse { uuid, address }
+impl ConversationCmdType {
+    pub fn new(uuid: uuid::Uuid, peer: String) -> Self {
+        ConversationCmdType {
+            uuid,
+            peer,
+            online: true,
+            avatar: String::new(),
+        }
     }
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct MessagesResponse {
-    chat_uuid: uuid::Uuid,
-    sender: String,
-    recipient: String,
+pub struct MessageCmdType {
+    uuid: uuid::Uuid,
     content: String,
+    sent_by_client: bool,
     timestamp: chrono::DateTime<chrono::Utc>,
 }
 
-impl MessagesResponse {
+impl MessageCmdType {
     pub fn new(
-        chat_uuid: uuid::Uuid,
-        sender: String,
-        receiver: String,
+        uuid: uuid::Uuid,
         content: String,
+        sent_by_client: bool,
         timestamp: chrono::DateTime<chrono::Utc>,
     ) -> Self {
-        MessagesResponse {
-            chat_uuid,
-            sender,
-            recipient: receiver,
+        MessageCmdType {
+            uuid,
             content,
+            sent_by_client,
             timestamp,
         }
     }
@@ -43,9 +47,9 @@ impl MessagesResponse {
 #[serde(rename_all = "camelCase", tag = "event", content = "data")]
 pub enum EventsFromServer {
     #[serde(rename_all = "camelCase")]
-    AllChats { chats: Vec<ChatResponse> },
+    AllChats { chats: Vec<ConversationCmdType> },
     #[serde(rename_all = "camelCase")]
-    ChatMessages { messages: Vec<MessagesResponse> },
+    ChatMessages { messages: Vec<MessageCmdType> },
     #[serde(rename_all = "camelCase")]
-    ChatMessage { message: MessagesResponse },
+    ChatMessage { message: MessageCmdType },
 }

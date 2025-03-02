@@ -31,11 +31,11 @@ impl Store {
         connections.insert(id, connection);
     }
 
-    pub async fn get_connections_ids(&self) -> Vec<events::ChatResponse> {
+    pub async fn get_connections_ids(&self) -> Vec<events::ConversationCmdType> {
         let connections = self.connections.read().await;
         connections
             .iter()
-            .map(|(id, (address, _))| events::ChatResponse::new(id.clone(), address.clone()))
+            .map(|(id, (address, _))| events::ConversationCmdType::new(id.clone(), address.clone()))
             .collect()
     }
 

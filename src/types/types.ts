@@ -1,8 +1,8 @@
 type MessageCmdType = {
   uuid: string;
-  sender: string;
-  receiver: string;
-  text: string;
+  // sender: string;
+  // receiver: string;
+  content: string;
   timestamp: string;
   sent_by_client: boolean;
 };

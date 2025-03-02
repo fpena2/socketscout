@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use futures::{stream::SplitStream, StreamExt};
 use tauri::{AppHandle, Emitter, State};
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};
@@ -5,16 +7,16 @@ use uuid::Uuid;
 
 use crate::{
     connections, database,
-    events::{self, ChatResponse},
+    events::{self, ConversationCmdType},
 };
 
 type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
 
 #[tauri::command]
-pub async fn cmd_get_list_of_chats(
+pub async fn cmd_get_conversations_list(
     con: State<'_, connections::Store>,
-) -> Result<Vec<ChatResponse>, String> {
+) -> Result<Vec<ConversationCmdType>, String> {
     let chats = con.inner().get_connections_ids().await;
     Ok(chats)
 }
@@ -48,7 +50,7 @@ pub async fn cmd_send_message(
     message: &str,
 ) -> Result<(), String> {
     let uuid = Uuid::parse_str(uuid).unwrap();
-    let message: events::MessagesResponse = serde_json::from_str(&message).unwrap();
+    let message: events::MessageCmdType = serde_json::from_str(&message).unwrap();
     db.inner().add_message(uuid, message).await;
     Ok(())
 }
@@ -77,15 +79,13 @@ pub async fn cmd_establish_connection(
 
     log::info!("Connected to server: {}", address);
 
-    let address = address.to_string();
     let (write, read) = ws_stream.split();
 
     // Store connection in state so that we can send messages to it later.
     let uuid = Uuid::new_v4();
+    let address = address.to_string();
     {
-        con.inner()
-            .add_connection(uuid, (address.clone(), write))
-            .await;
+        con.inner().add_connection(uuid, (address, write)).await;
     }
 
     // Open a new chat
@@ -95,13 +95,7 @@ pub async fn cmd_establish_connection(
 
     // FIXME: listen after the chat is opened by the user
     // Collect messages from server
-    tokio::spawn(receive_server_message(
-        app,
-        uuid,
-        address,
-        read,
-        db.inner().clone(),
-    ));
+    tokio::spawn(receive_server_message(app, uuid, read, db.inner().clone()));
 
     Ok(())
 }
@@ -109,7 +103,6 @@ pub async fn cmd_establish_connection(
 async fn receive_server_message(
     app: AppHandle,
     uuid: Uuid,
-    address: String,
     mut read: SplitWssStream,
     db: database::Store,
 ) {
@@ -119,11 +112,10 @@ async fn receive_server_message(
                 log::info!("Received: {:?}", msg);
                 if let tungstenite::Message::Text(content) = msg {
                     {
-                        let message = events::MessagesResponse::new(
+                        let message = events::MessageCmdType::new(
                             uuid,
-                            address.to_string(),
-                            "You".to_string(),
                             content.to_string(),
+                            false,
                             chrono::Utc::now(),
                         );
 
