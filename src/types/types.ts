@@ -1,29 +1,25 @@
-type ChatMessage = {
-  chat_uuid: string;
+type MessageCmdType = {
+  uuid: string;
   sender: string;
   receiver: string;
-  content: string;
+  text: string;
   timestamp: string;
+  sent_by_client: boolean;
 };
 
-type Chat = {
+type ConversationCmdType = {
   uuid: string;
-  address: string;
+  peer: string; // server's address
+  online: boolean;
+  avatar: string; // FIXME: gen an avatar like github's
 };
 
-//
-// Server Side Events
-//
-type AllChatsEvent = {
-  chats: Chat[];
+type ConversationsCmdType = {
+  conversations: ConversationCmdType[];
 };
 
-type ChatMessagesEvent = {
-  messages: ChatMessage[];
+type MessagesCmdType = {
+  messages: MessageCmdType[];
 };
 
-type ChatMessageEvent = {
-  message: ChatMessage;
-};
-
-export type { Chat, AllChatsEvent, ChatMessageEvent, ChatMessage };
+export type { ConversationCmdType, ConversationsCmdType, MessageCmdType, MessagesCmdType };
