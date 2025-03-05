@@ -58,7 +58,7 @@ function TransactionDialog({
 
   return (
     <Dialog fullWidth open={open} onClose={() => onClose(null)}>
-      <DialogTitle>Confirm transfer</DialogTitle>
+      <DialogTitle>Confirm new connection</DialogTitle>
       <DialogContent>{payload.component}</DialogContent>
       <DialogActions>
         <Button
@@ -67,11 +67,11 @@ function TransactionDialog({
           onClick={async () => {
             setLoading(true);
             try {
-              const address = `http://${formData.ws_server}:${formData.ws_port}${formData.ws_uri}`;
-              const result = await invoke('cmd_establish_connection', {
+              const address = `ws://${formData.ws_server}:${formData.ws_port}${formData.ws_uri}`;
+              const uuid = await invoke<string>('cmd_establish_connection', {
                 address: address,
               });
-              onClose('test_todo'); // FIXME: return the uuid
+              onClose(uuid);
             } catch (error) {
               console.error('Error establishing connection:', error);
             } finally {
@@ -124,7 +124,7 @@ function DialogContainer() {
         });
         // preview-end
         if (uuid) {
-          dialogs.alert(`The transaction was completed with ID: ${uuid}`, {
+          dialogs.alert(`Server connection completed with ID: ${uuid}`, {
             title: 'Success',
           });
         }

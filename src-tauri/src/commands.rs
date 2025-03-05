@@ -70,7 +70,7 @@ pub async fn cmd_establish_connection(
     con: State<'_, connections::Store>,
     db: State<'_, database::Store>,
     address: &str,
-) -> Result<(), String> {
+) -> Result<String, String> {
     let (ws_stream, _) = connect_async(address)
         .await
         .map_err(|_| "Failed to connect with server")?;
@@ -95,7 +95,7 @@ pub async fn cmd_establish_connection(
     // Collect messages from server
     tokio::spawn(receive_server_message(app, uuid, read, db.inner().clone()));
 
-    Ok(())
+    Ok(uuid.to_string())
 }
 
 async fn receive_server_message(
