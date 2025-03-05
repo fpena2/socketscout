@@ -1,6 +1,6 @@
 import { Drawer } from '@mui/material';
 import { Box } from '@mui/system';
-import { ConversationsList } from './conversation-list';
+import { ConversationsList } from './conversations-list';
 
 const MobileDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => (
   <Drawer anchor='left' open={open} onClose={onClose}>

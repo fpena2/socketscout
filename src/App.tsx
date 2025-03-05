@@ -15,7 +15,8 @@ import { BsCheck2All } from 'react-icons/bs';
 import { IoMenu, IoSend } from 'react-icons/io5';
 import { RiRadioButtonLine } from 'react-icons/ri';
 
-import { ConversationsList } from './components/conversation-list';
+import ConversationsHeader from './components/conversations-header';
+import { ConversationsList } from './components/conversations-list';
 import { MobileDrawer } from './components/mobile-drawer';
 import { conversations, messages } from './components/mock-data';
 import {
@@ -28,7 +29,6 @@ import {
   MessageContainer,
   Sidebar,
 } from './components/styled';
-import ConversationsHeader from './components/conversations-header';
 
 const ChatUI: React.FC = () => {
   const [message, setMessage] = useState<string>('');
