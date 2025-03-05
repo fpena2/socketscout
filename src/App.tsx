@@ -28,7 +28,7 @@ import {
   MessageBubble,
   MessageContainer,
   Sidebar,
-} from './components/styled';
+} from './styled';
 
 const ChatUI: React.FC = () => {
   const [message, setMessage] = useState<string>('');
