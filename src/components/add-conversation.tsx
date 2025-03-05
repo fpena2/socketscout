@@ -1,26 +1,154 @@
-import { Avatar, Badge, List, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
-import { conversations } from './mock-data';
+import * as React from 'react';
 
-export const AddConversations: React.FC = () => (
-  <List>
-    {conversations.map((convo) => (
-      <ListItemButton key={convo.uuid}>
-        <ListItemAvatar>
-          <Badge
-            overlap='circular'
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            variant='dot'
-            color={convo.online ? 'success' : 'error'}
-          >
-            <Avatar src={`https://${convo.avatar}`} alt={convo.peer} />
-          </Badge>
-        </ListItemAvatar>
-        <ListItemText
-          primary={convo.peer}
-          secondary={convo.uuid}
-          slotProps={{ primary: { style: { fontWeight: 500 } } }}
-        />
-      </ListItemButton>
-    ))}
-  </List>
-);
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import { IconButton } from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import { invoke } from '@tauri-apps/api/core';
+import { DialogProps, DialogsProvider, useDialogs } from '@toolpad/core/useDialogs';
+
+interface TransferFormData {
+  ws_server: string;
+  ws_port: string;
+  ws_uri: string;
+}
+
+const FormContext = React.createContext<{
+  formData: TransferFormData;
+  setFormData: (data: TransferFormData) => void;
+} | null>(null);
+
+function useFormContext() {
+  const context = React.useContext(FormContext);
+  if (!context) {
+    throw new Error('useFormContext must be used within a FormProvider');
+  }
+  return context;
+}
+
+// function mockTransfer(formData: TransferFormData): Promise<string> {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       console.log('FormData', formData);
+//       const uuid = crypto.randomUUID();
+//       resolve(uuid);
+//     }, 1000);
+//   });
+// }
+
+function TransactionDialog({
+  payload,
+  open,
+  onClose,
+}: DialogProps<{ component: React.ReactNode; data: string }, string | null>) {
+  const [loading, setLoading] = React.useState(false);
+  const { formData } = useFormContext();
+
+  const isValidCsrf = React.useMemo(() => {
+    if (payload.data) {
+      return true;
+    }
+    return false;
+  }, [payload.data]);
+
+  return (
+    <Dialog fullWidth open={open} onClose={() => onClose(null)}>
+      <DialogTitle>Confirm transfer</DialogTitle>
+      <DialogContent>{payload.component}</DialogContent>
+      <DialogActions>
+        <Button
+          loading={loading}
+          disabled={!isValidCsrf || loading}
+          onClick={async () => {
+            setLoading(true);
+            try {
+              const address = `http://${formData.ws_server}:${formData.ws_port}${formData.ws_uri}`;
+              const result = await invoke('cmd_establish_connection', {
+                address: address,
+              });
+              onClose('test_todo'); // FIXME: return the uuid
+            } catch (error) {
+              console.error('Error establishing connection:', error);
+            } finally {
+              setLoading(false);
+            }
+          }}
+        >
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+function Payload() {
+  const { formData, setFormData } = useFormContext();
+  return (
+    <Stack spacing={2} padding={1}>
+      <TextField
+        label='Server URL'
+        value={formData.ws_server}
+        onChange={(event) => setFormData({ ...formData, ws_server: event.target.value })}
+      />
+      <TextField
+        label='Server Port'
+        value={formData.ws_port}
+        onChange={(event) => setFormData({ ...formData, ws_port: event.target.value })}
+      />
+      <TextField
+        label='Server URI'
+        value={formData.ws_uri}
+        onChange={(event) => setFormData({ ...formData, ws_uri: event.target.value })}
+      />
+    </Stack>
+  );
+}
+
+function DialogContainer() {
+  const dialogs = useDialogs();
+  const csrfToken = crypto.randomUUID();
+  return (
+    <IconButton
+      aria-label='fingerprint'
+      color='success'
+      onClick={async () => {
+        // preview-start
+        const uuid = await dialogs.open(TransactionDialog, {
+          component: <Payload />,
+          data: csrfToken,
+        });
+        // preview-end
+        if (uuid) {
+          dialogs.alert(`The transaction was completed with ID: ${uuid}`, {
+            title: 'Success',
+          });
+        }
+      }}
+    >
+      <Fingerprint />
+    </IconButton>
+  );
+}
+
+export default function NewConversation() {
+  const [formData, setFormData] = React.useState<TransferFormData>({
+    ws_server: '127.0.0.1',
+    ws_port: '8080',
+    ws_uri: '/',
+  });
+
+  const contextValue = React.useMemo(() => ({ formData, setFormData }), [formData]);
+
+  return (
+    <FormContext.Provider value={contextValue}>
+      <DialogsProvider>
+        <DialogContainer />
+      </DialogsProvider>
+    </FormContext.Provider>
+  );
+}

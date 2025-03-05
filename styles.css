@@ -1,0 +1,12 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Remove default margin and padding */
+  body {
+    margin: 0; 
+    padding: 0; 
+    height: 100vh;
+  }

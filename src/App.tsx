@@ -2,7 +2,6 @@ import {
   Avatar,
   Badge,
   Box,
-  Button,
   Drawer,
   IconButton,
   Stack,
@@ -12,13 +11,15 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+
+import { invoke } from '@tauri-apps/api/core';
+import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { BsCheck2All } from 'react-icons/bs';
 import { IoMenu, IoSend } from 'react-icons/io5';
 import { RiRadioButtonLine } from 'react-icons/ri';
 
-import { invoke } from '@tauri-apps/api/core';
-import { useAtom } from 'jotai';
+import NewConversation from './components/add-conversation';
 import { ConversationsList } from './components/conversation-list';
 import { conversations, messages } from './components/mock-data';
 import {
@@ -40,7 +41,7 @@ const ChatUI: React.FC = () => {
   const theme = useTheme<Theme>();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [chats, setChats] = useAtom(chatsAtom);
+  const [_chats, setChats] = useAtom(chatsAtom);
   React.useEffect(() => {
     invoke<ConversationCmdType[]>('cmd_get_conversations_list')
       .then((response) => {
@@ -62,11 +63,6 @@ const ChatUI: React.FC = () => {
     }
   };
 
-  const handleNewConversation = async (): Promise<void> => {
-    const result = await invoke('cmd_establish_connection', { address: 'http://localhost:8080' });
-    console.log(result);
-  };
-
   return (
     <Container>
       {isMobile && (
@@ -77,11 +73,9 @@ const ChatUI: React.FC = () => {
         </Drawer>
       )}
       <Sidebar>
-        <Stack direction='row' justifyContent='space-between' sx={{ p: 2.3 }}>
-          <Typography variant='h5'>Conversations</Typography>
-          <Button variant='contained' onClick={handleNewConversation}>
-            New
-          </Button>
+        <Stack direction='row' justifyContent='space-between' sx={{ p: 2.5 }}>
+          <Typography variant='h6'>Conversations</Typography>
+          <NewConversation />
         </Stack>
         <ConversationsList />
       </Sidebar>
