@@ -12,11 +12,11 @@ type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
 
 #[tauri::command]
-pub async fn cmd_get_conversations_list(
+pub async fn cmd_get_conversations(
     con: State<'_, connections::Store>,
 ) -> Result<Vec<ConversationCmdType>, String> {
-    let chats = con.inner().get_connections_ids().await;
-    Ok(chats)
+    let convos = con.inner().get_conversations().await;
+    Ok(convos)
 }
 
 #[tauri::command]
@@ -59,7 +59,7 @@ pub async fn cmd_close_connection(
     uuid: &str,
 ) -> Result<(), String> {
     con.inner()
-        .close_connection(Uuid::parse_str(uuid).unwrap())
+        .close_conversation(Uuid::parse_str(uuid).unwrap())
         .await;
     Ok(())
 }
@@ -70,7 +70,7 @@ pub async fn cmd_establish_connection(
     con: State<'_, connections::Store>,
     db: State<'_, database::Store>,
     address: &str,
-) -> Result<String, String> {
+) -> Result<ConversationCmdType, String> {
     let (ws_stream, _) = connect_async(address)
         .await
         .map_err(|_| "Failed to connect with server")?;
@@ -83,7 +83,7 @@ pub async fn cmd_establish_connection(
     let uuid = Uuid::new_v4();
     let address = address.to_string();
     {
-        con.inner().add_connection(uuid, (address, write)).await;
+        con.inner().add_conversation(uuid, (address, write)).await;
     }
 
     // Open a new chat
@@ -95,7 +95,12 @@ pub async fn cmd_establish_connection(
     // Collect messages from server
     tokio::spawn(receive_server_message(app, uuid, read, db.inner().clone()));
 
-    Ok(uuid.to_string())
+    let convo = con
+        .inner()
+        .get_conversation(uuid)
+        .await
+        .expect("Conversation not found");
+    Ok(convo)
 }
 
 async fn receive_server_message(

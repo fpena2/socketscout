@@ -26,7 +26,7 @@ pub async fn run() {
             commands::cmd_establish_connection,
             commands::cmd_close_connection,
             commands::cmd_send_message,
-            commands::cmd_get_conversations_list,
+            commands::cmd_get_conversations,
             commands::cmd_get_chat_messages,
         ])
         .run(tauri::generate_context!())

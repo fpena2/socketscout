@@ -14,12 +14,12 @@ type ConversationCmdType = {
   avatar: string; // FIXME: gen an avatar like github's
 };
 
-type ConversationsCmdType = {
-  conversations: ConversationCmdType[];
-};
+// type ConversationsCmdType = {
+//   conversations: ConversationCmdType[];
+// };
 
-type MessagesCmdType = {
-  messages: MessageCmdType[];
-};
+// type MessagesCmdType = {
+//   messages: MessageCmdType[];
+// };
 
-export type { ConversationCmdType, ConversationsCmdType, MessageCmdType, MessagesCmdType };
+export type { ConversationCmdType, MessageCmdType };

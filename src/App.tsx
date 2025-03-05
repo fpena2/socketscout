@@ -40,10 +40,10 @@ const ChatUI: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const theme = useTheme<Theme>();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-  const [_chats, setChats] = useAtom(chatsAtom);
+  const [chats, setChats] = useAtom(chatsAtom);
+  
   React.useEffect(() => {
-    invoke<ConversationCmdType[]>('cmd_get_conversations_list')
+    invoke<ConversationCmdType[]>('cmd_get_conversations')
       .then((response) => {
         const chatsMap = new Map<string, ConversationCmdType>();
         response.forEach((chat) => {

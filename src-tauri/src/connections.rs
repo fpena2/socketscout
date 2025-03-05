@@ -14,37 +14,48 @@ type SinkWssStream = SplitSink<
 use crate::events;
 
 pub struct Store {
-    connections: Arc<RwLock<HashMap<uuid::Uuid, (String, SinkWssStream)>>>,
+    conversations: Arc<RwLock<HashMap<uuid::Uuid, (String, SinkWssStream)>>>,
 }
 
 impl Default for Store {
     fn default() -> Self {
         Store {
-            connections: Arc::new(RwLock::new(HashMap::new())),
+            conversations: Arc::new(RwLock::new(HashMap::new())),
         }
     }
 }
 
 impl Store {
-    pub async fn add_connection(&self, id: uuid::Uuid, connection: (String, SinkWssStream)) {
-        let mut connections = self.connections.write().await;
-        connections.insert(id, connection);
+    pub async fn add_conversation(&self, id: uuid::Uuid, conversation: (String, SinkWssStream)) {
+        let mut conversations = self.conversations.write().await;
+        conversations.insert(id, conversation);
     }
 
-    pub async fn get_connections_ids(&self) -> Vec<events::ConversationCmdType> {
-        let connections = self.connections.read().await;
-        connections
+    pub async fn get_conversation(&self, id: uuid::Uuid) -> Option<events::ConversationCmdType> {
+        let conversations = self.conversations.read().await;
+        conversations
+            .get(&id)
+            .map(|(address, _)| events::ConversationCmdType::new(id, address.clone()))
+    }
+
+    pub async fn get_conversations(&self) -> Vec<events::ConversationCmdType> {
+        let conversations = self.conversations.read().await;
+        let futures = conversations
             .iter()
-            .map(|(id, (address, _))| events::ConversationCmdType::new(id.clone(), address.clone()))
-            .collect()
+            .map(|(id, _)| self.get_conversation(id.clone()));
+
+        let results: Vec<Option<events::ConversationCmdType>> =
+            futures::future::join_all(futures).await;
+
+        results.into_iter().filter_map(|x| x).collect()
     }
 
-    pub async fn close_connection(&self, id: uuid::Uuid) {
-        let mut connections = self.connections.write().await;
-        if let Some((addr, sink)) = connections.get_mut(&id) {
+    pub async fn close_conversation(&self, id: uuid::Uuid) {
+        let mut conversations = self.conversations.write().await;
+        if let Some((addr, sink)) = conversations.get_mut(&id) {
             let _ = sink.send(tungstenite::Message::Close(None)).await;
-            log::info!("Closing connection with server: {addr} (ID: {id})");
+            log::info!("Closing conversation with server: {addr} (ID: {id})");
         }
-        connections.remove(&id);
+        conversations.remove(&id);
     }
 }
