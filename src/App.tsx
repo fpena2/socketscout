@@ -2,9 +2,7 @@ import {
   Avatar,
   Badge,
   Box,
-  Drawer,
   IconButton,
-  Stack,
   TextField,
   Theme,
   Typography,
@@ -17,8 +15,8 @@ import { BsCheck2All } from 'react-icons/bs';
 import { IoMenu, IoSend } from 'react-icons/io5';
 import { RiRadioButtonLine } from 'react-icons/ri';
 
-import NewConversation from './components/add-conversation';
 import { ConversationsList } from './components/conversation-list';
+import { MobileDrawer } from './components/mobile-drawer';
 import { conversations, messages } from './components/mock-data';
 import {
   ChatArea,
@@ -30,6 +28,7 @@ import {
   MessageContainer,
   Sidebar,
 } from './components/styled';
+import ConversationsHeader from './components/conversations-header';
 
 const ChatUI: React.FC = () => {
   const [message, setMessage] = useState<string>('');
@@ -46,18 +45,9 @@ const ChatUI: React.FC = () => {
 
   return (
     <Container>
-      {isMobile && (
-        <Drawer anchor='left' open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-          <Box width={320}>
-            <ConversationsList />
-          </Box>
-        </Drawer>
-      )}
+      {isMobile && <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />}
       <Sidebar>
-        <Stack direction='row' justifyContent='space-between' sx={{ p: 2.5 }}>
-          <Typography variant='h6'>Conversations</Typography>
-          <NewConversation />
-        </Stack>
+        <ConversationsHeader />
         <ConversationsList />
       </Sidebar>
       <ChatArea>
