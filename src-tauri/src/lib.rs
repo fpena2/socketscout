@@ -23,10 +23,11 @@ pub async fn run() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            commands::cmd_establish_connection,
-            commands::cmd_close_connection,
-            commands::cmd_send_message,
+            commands::cmd_open_conversation,
+            commands::cmd_close_conversation,
             commands::cmd_get_conversations,
+            //
+            commands::cmd_send_message,
             commands::cmd_get_chat_messages,
         ])
         .run(tauri::generate_context!())

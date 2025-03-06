@@ -54,7 +54,7 @@ pub async fn cmd_send_message(
 }
 
 #[tauri::command]
-pub async fn cmd_close_connection(
+pub async fn cmd_close_conversation(
     con: State<'_, connections::Store>,
     uuid: &str,
 ) -> Result<(), String> {
@@ -65,7 +65,7 @@ pub async fn cmd_close_connection(
 }
 
 #[tauri::command]
-pub async fn cmd_establish_connection(
+pub async fn cmd_open_conversation(
     app: AppHandle,
     con: State<'_, connections::Store>,
     db: State<'_, database::Store>,

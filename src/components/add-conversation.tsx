@@ -68,7 +68,7 @@ function TransactionDialog({
             setLoading(true);
             try {
               const address = `ws://${formData.ws_server}:${formData.ws_port}${formData.ws_uri}`;
-              const uuid = await invoke<string>('cmd_establish_connection', {
+              const uuid = await invoke<string>('cmd_open_conversation', {
                 address: address,
               });
               onClose(uuid);
