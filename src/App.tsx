@@ -1,5 +1,4 @@
 import { Theme, useMediaQuery, useTheme } from '@mui/material';
-
 import React, { useState } from 'react';
 
 import ConversationsHeader from './components/conversations-header';

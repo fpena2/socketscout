@@ -3,11 +3,12 @@ import { invoke } from '@tauri-apps/api/core';
 import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 
-import { chatsAtom } from '@/stores/atoms';
+import { chatsAtom, selectedChatAtom } from '@/stores/atoms';
 import { ConversationCmdType } from '@/types';
 
 export const ConversationsList: React.FC = () => {
   const [chats, setChats] = useAtom(chatsAtom);
+  const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
 
   useEffect(() => {
     invoke<ConversationCmdType[]>('cmd_get_conversations')
@@ -26,7 +27,12 @@ export const ConversationsList: React.FC = () => {
   return (
     <List>
       {Array.from(chats.values()).map((convo) => (
-        <ListItemButton key={convo.uuid}>
+        <ListItemButton
+          key={convo.uuid}
+          onClick={() => {
+            setSelectedChat(convo);
+          }}
+        >
           <ListItemAvatar>
             <Badge
               overlap='circular'

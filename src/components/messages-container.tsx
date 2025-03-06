@@ -2,8 +2,11 @@ import { Message, MessageBubble, MessageContainer } from '@/styled';
 import { Typography } from '@mui/material';
 import { BsCheck2All } from 'react-icons/bs';
 import { messages } from './mock-data';
+import { selectedChatAtom } from '@/stores/atoms';
+import { useAtom } from 'jotai';
 
 const MessagesContainer: React.FC = () => {
+  const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
   return (
     <MessageContainer>
       {messages.map((msg) => (
