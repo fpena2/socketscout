@@ -26,7 +26,7 @@ export const ConversationsList: React.FC = () => {
   }, [chats]);
 
   async function setActiveConversation(uuid: string) {
-    await invoke('set_active_conversation', { uuid: uuid })
+    await invoke('cmd_set_active_conversation', { uuid: uuid })
       .then(() => {
         console.log('Active conversation set:', uuid);
       })

@@ -16,7 +16,7 @@ type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
 
 #[tauri::command]
-pub async fn set_active_conversation(
+pub async fn cmd_set_active_conversation(
     con: State<'_, connections::Store>,
     uuid: &str,
 ) -> Result<(), String> {
