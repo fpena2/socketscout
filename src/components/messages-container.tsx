@@ -15,7 +15,7 @@ const MessagesContainer: React.FC = () => {
   useEffect(() => {
     if (!selectedChat) return;
 
-    const unlisten = listen<MessageCmdType[]>('new_messages', (event: any) => {
+    const unlisten = listen<MessageCmdType[]>('event_new_messages', (event: any) => {
       setMessages((prevMessages) => [...prevMessages, ...event.payload]);
     });
 

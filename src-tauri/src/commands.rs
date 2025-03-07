@@ -9,7 +9,7 @@ use uuid::Uuid;
 
 use crate::{
     connections, database,
-    events::{self, ConversationCmdType},
+    events::{self, ConversationCmdType, MessageCmdType},
 };
 
 type SplitWssStream =
@@ -21,10 +21,21 @@ pub async fn cmd_set_active_conversation(
     uuid: &str,
 ) -> Result<(), String> {
     info!("Setting active conversation to {}", uuid);
-    con.inner()
-        .set_active_conversation(Uuid::parse_str(uuid).unwrap())
-        .await;
+    let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
+    con.inner().set_active_conversation(uuid).await;
     Ok(())
+}
+
+#[tauri::command]
+pub async fn cmd_get_conversation_messages(
+    db: State<'_, database::Store>,
+    uuid: &str,
+) -> Result<Vec<MessageCmdType>, String> {
+    let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
+    match db.get_messages(uuid).await {
+        Some(messages) => Ok(messages),
+        None => Ok(Vec::new()),
+    }
 }
 
 #[tauri::command]
@@ -40,9 +51,8 @@ pub async fn cmd_close_conversation(
     con: State<'_, connections::Store>,
     uuid: &str,
 ) -> Result<(), String> {
-    con.inner()
-        .close_conversation(Uuid::parse_str(uuid).unwrap())
-        .await;
+    let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
+    con.inner().close_conversation(uuid).await;
     Ok(())
 }
 
@@ -106,8 +116,8 @@ async fn receive_server_message(
                 if !message_buffer.is_empty() {
                     if let Some(active_convo_id) = con.get_active_conversation().await{
                         if active_convo_id == uuid {
-                            app.emit("new_messages", &message_buffer)
-                                .expect("Failed to emit new_messages event");
+                            app.emit("event_new_messages", &message_buffer)
+                                .expect("Failed to emit event for new messages");
                         }
                     }
                     message_buffer.clear();
@@ -138,35 +148,14 @@ async fn receive_server_message(
 ////////////////////////////////////////////////////////
 
 #[tauri::command]
-pub async fn cmd_get_chat_messages(
-    app: AppHandle,
-    db: State<'_, database::Store>,
-    uudi: String,
-) -> Result<(), String> {
-    let uuid: Uuid = Uuid::parse_str(&uudi).unwrap();
-    match db.get_messages(uuid).await {
-        Some(messages) => {
-            app.emit(
-                "chat-messages-event",
-                events::EventsFromServer::ChatMessages { messages },
-            )
-            .unwrap();
-        }
-        None => {
-            log::error!("Chat not found for uuid: {}", uuid);
-        }
-    };
-    Ok(())
-}
-
-#[tauri::command]
 pub async fn cmd_send_message(
     db: State<'_, database::Store>,
     uuid: &str,
     message: &str,
 ) -> Result<(), String> {
-    let uuid = Uuid::parse_str(uuid).unwrap();
-    let message: events::MessageCmdType = serde_json::from_str(&message).unwrap();
+    let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
+    let message: events::MessageCmdType =
+        serde_json::from_str(&message).map_err(|e| format!("Invalid message or format: {}", e))?;
     db.inner().add_message(uuid, message).await;
     Ok(())
 }

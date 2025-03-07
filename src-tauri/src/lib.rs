@@ -25,11 +25,11 @@ pub async fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::cmd_open_conversation,
             commands::cmd_close_conversation,
-            commands::cmd_get_conversations,
             commands::cmd_set_active_conversation,
+            commands::cmd_get_conversations,
+            commands::cmd_get_conversation_messages,
             //
             commands::cmd_send_message,
-            commands::cmd_get_chat_messages,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
