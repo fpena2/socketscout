@@ -1,5 +1,5 @@
 type MessageCmdType = {
-  uuid: string;
+  uuid: string; // unique identifier for a message
   // sender: string;
   // receiver: string;
   content: string;
@@ -8,18 +8,10 @@ type MessageCmdType = {
 };
 
 type ConversationCmdType = {
-  uuid: string;
+  uuid: string; // unique identifier for a conversation
   peer: string; // server's address
   online: boolean;
   avatar: string; // FIXME: gen an avatar like github's
 };
-
-// type ConversationsCmdType = {
-//   conversations: ConversationCmdType[];
-// };
-
-// type MessagesCmdType = {
-//   messages: MessageCmdType[];
-// };
 
 export type { ConversationCmdType, MessageCmdType };

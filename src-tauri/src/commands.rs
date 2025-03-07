@@ -127,7 +127,7 @@ async fn receive_server_message(
             message = read.next() => {
                 if let Some(Ok(tungstenite::Message::Text(content))) = message {
                     let message = events::MessageCmdType::new(
-                        uuid,
+                        Uuid::new_v4(),
                         content.to_string(),
                         false,
                         chrono::Utc::now(),
