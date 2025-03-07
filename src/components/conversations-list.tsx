@@ -24,6 +24,16 @@ export const ConversationsList: React.FC = () => {
       });
   }, [chats]);
 
+  async function setActiveConversation(uuid: string) {
+    await invoke('set_active_conversation', { uuid: uuid })
+      .then(() => {
+        console.log('Active conversation set:', uuid);
+      })
+      .catch((error) => {
+        console.error('Failed to set active conversation:', error);
+      });
+  }
+
   return (
     <List>
       {Array.from(chats.values()).map((convo) => (
@@ -31,6 +41,7 @@ export const ConversationsList: React.FC = () => {
           key={convo.uuid}
           onClick={() => {
             setSelectedChat(convo);
+            setActiveConversation(convo.uuid);
           }}
         >
           <ListItemAvatar>

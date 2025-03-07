@@ -73,7 +73,13 @@ pub async fn cmd_open_conversation(
 
     // FIXME: listen after the chat is opened by the user
     // Collect messages from server
-    tokio::spawn(receive_server_message(app, uuid, read, db.inner().clone()));
+    tokio::spawn(receive_server_message(
+        app,
+        uuid,
+        read,
+        db.inner().clone(),
+        con.inner().clone(),
+    ));
 
     let convo = con
         .inner()
@@ -88,6 +94,7 @@ async fn receive_server_message(
     uuid: Uuid,
     mut read: SplitWssStream,
     db: database::Store,
+    con: connections::Store,
 ) {
     let mut message_buffer = Vec::new();
     let mut interval = interval(Duration::from_millis(500));
@@ -95,8 +102,12 @@ async fn receive_server_message(
         tokio::select! {
             _ = interval.tick() => {
                 if !message_buffer.is_empty() {
-                    app.emit("new_messages", &message_buffer)
-                        .expect("Failed to emit new_messages event");
+                    if let Some(active_convo_id) = con.get_active_conversation().await{
+                        if active_convo_id == uuid {
+                            app.emit("new_messages", &message_buffer)
+                                .expect("Failed to emit new_messages event");
+                        }
+                    }
                     message_buffer.clear();
                 }
             }

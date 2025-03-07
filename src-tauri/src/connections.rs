@@ -13,6 +13,7 @@ type SinkWssStream = SplitSink<
 
 use crate::events;
 
+#[derive(Clone)]
 pub struct Store {
     current_conversation: Arc<RwLock<Option<uuid::Uuid>>>,
     conversations: Arc<RwLock<HashMap<uuid::Uuid, (String, SinkWssStream)>>>,
@@ -31,6 +32,11 @@ impl Store {
     pub async fn set_active_conversation(&self, id: uuid::Uuid) {
         let mut current_conversation = self.current_conversation.write().await;
         *current_conversation = Some(id);
+    }
+
+    pub async fn get_active_conversation(&self) -> Option<uuid::Uuid> {
+        let current_conversation = self.current_conversation.read().await;
+        *current_conversation
     }
 
     pub async fn add_conversation(&self, id: uuid::Uuid, conversation: (String, SinkWssStream)) {
