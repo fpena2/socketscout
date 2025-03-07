@@ -40,6 +40,7 @@ export const ConversationsList: React.FC = () => {
       {Array.from(chats.values()).map((convo) => (
         <ListItemButton
           key={convo.uuid}
+          selected={selectedChat?.uuid === convo.uuid}
           onClick={() => {
             setSelectedChat(convo);
             setActiveConversation(convo.uuid);

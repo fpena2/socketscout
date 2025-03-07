@@ -28,8 +28,7 @@ pub async fn run() {
             commands::cmd_set_active_conversation,
             commands::cmd_get_conversations,
             commands::cmd_get_conversation_messages,
-            //
-            commands::cmd_send_message,
+            commands::cmd_send_conversation_message,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,7 +1,6 @@
 use std::time::Duration;
 
 use futures::{stream::SplitStream, StreamExt};
-use log::info;
 use tauri::{AppHandle, Emitter, State};
 use tokio::time::interval;
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};
@@ -20,7 +19,7 @@ pub async fn cmd_set_active_conversation(
     con: State<'_, connections::Store>,
     uuid: &str,
 ) -> Result<(), String> {
-    info!("Setting active conversation to {}", uuid);
+    log::info!("Setting active conversation to {}", uuid);
     let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
     con.inner().set_active_conversation(uuid).await;
     Ok(())
@@ -148,14 +147,13 @@ async fn receive_server_message(
 ////////////////////////////////////////////////////////
 
 #[tauri::command]
-pub async fn cmd_send_message(
+pub async fn cmd_send_conversation_message(
     db: State<'_, database::Store>,
     uuid: &str,
-    message: &str,
+    message: events::MessageCmdType,
 ) -> Result<(), String> {
-    let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
-    let message: events::MessageCmdType =
-        serde_json::from_str(&message).map_err(|e| format!("Invalid message or format: {}", e))?;
-    db.inner().add_message(uuid, message).await;
+    log::info!("{message:?}");
+    // let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
+
     Ok(())
 }

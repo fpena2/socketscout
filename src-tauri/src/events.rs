@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize)]
 pub struct ConversationCmdType {
-    uuid: uuid::Uuid,
+    uuid: String, // uuid::Uuid,
     peer: String,
     online: bool,
     avatar: String,
@@ -11,7 +11,7 @@ pub struct ConversationCmdType {
 impl ConversationCmdType {
     pub fn new(uuid: uuid::Uuid, peer: String) -> Self {
         ConversationCmdType {
-            uuid,
+            uuid: uuid.to_string(),
             peer,
             online: true,
             avatar: String::new(),
@@ -19,12 +19,14 @@ impl ConversationCmdType {
     }
 }
 
+/// A message sent from the server to the user or vise versa.
+/// The fields of this struct must be simple types so that it can be serialized by Tauri.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct MessageCmdType {
-    uuid: uuid::Uuid,
+    uuid: String, // uuid::Uuid,
     content: String,
     sent_by_client: bool,
-    timestamp: chrono::DateTime<chrono::Utc>,
+    timestamp: String, // chrono::DateTime<chrono::Utc>,
 }
 
 impl MessageCmdType {
@@ -35,10 +37,10 @@ impl MessageCmdType {
         timestamp: chrono::DateTime<chrono::Utc>,
     ) -> Self {
         MessageCmdType {
-            uuid,
+            uuid: uuid.to_string(),
             content,
             sent_by_client,
-            timestamp,
+            timestamp: timestamp.to_string(),
         }
     }
 }

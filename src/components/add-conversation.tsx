@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Fingerprint from '@mui/icons-material/Fingerprint';
+import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -30,16 +30,6 @@ function useFormContext() {
   }
   return context;
 }
-
-// function mockTransfer(formData: TransferFormData): Promise<string> {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       console.log('FormData', formData);
-//       const uuid = crypto.randomUUID();
-//       resolve(uuid);
-//     }, 1000);
-//   });
-// }
 
 function TransactionDialog({
   payload,
@@ -114,7 +104,7 @@ function DialogContainer() {
   const csrfToken = crypto.randomUUID();
   return (
     <IconButton
-      aria-label='fingerprint'
+      aria-label='add new conversation'
       color='success'
       onClick={async () => {
         // preview-start
@@ -130,7 +120,7 @@ function DialogContainer() {
         }
       }}
     >
-      <Fingerprint />
+      <AddIcon />
     </IconButton>
   );
 }
