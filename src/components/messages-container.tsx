@@ -1,13 +1,30 @@
 import { Typography } from '@mui/material';
+import { listen } from '@tauri-apps/api/event';
 import { useAtom } from 'jotai';
+import { useEffect } from 'react';
 import { BsCheck2All } from 'react-icons/bs';
 
-import { selectedChatAtom } from '@/stores/atoms';
+import { selectedChatAtom, selectedChatMessagesAtom } from '@/stores/atoms';
 import { Message, MessageBubble, MessageContainer } from '@/styled';
-import { messages } from './mock-data';
+import { MessageCmdType } from '@/types';
 
 const MessagesContainer: React.FC = () => {
   const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
+  const [messages, setMessages] = useAtom(selectedChatMessagesAtom);
+
+  useEffect(() => {
+    if (!selectedChat) return;
+
+    const unlisten = listen<MessageCmdType[]>('new_messages', (event: any) => {
+      setMessages((prevMessages) => [...prevMessages, ...event.payload]);
+    });
+
+    return () => {
+      unlisten.then((f) => f());
+      setMessages([]);
+    };
+  }, [selectedChat]);
+
   return (
     <MessageContainer>
       {messages.map((msg) => (

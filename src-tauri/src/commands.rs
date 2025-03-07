@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use futures::{stream::SplitStream, StreamExt};
+use log::info;
 use tauri::{AppHandle, Emitter, State};
 use tokio::time::interval;
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};
@@ -19,6 +20,7 @@ pub async fn set_active_conversation(
     con: State<'_, connections::Store>,
     uuid: &str,
 ) -> Result<(), String> {
+    info!("Setting active conversation to {}", uuid);
     con.inner()
         .set_active_conversation(Uuid::parse_str(uuid).unwrap())
         .await;
