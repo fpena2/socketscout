@@ -1,5 +1,8 @@
+use std::time::Duration;
+
 use futures::{stream::SplitStream, StreamExt};
 use tauri::{AppHandle, Emitter, State};
+use tokio::time::interval;
 use tokio_tungstenite::{connect_async, tungstenite, WebSocketStream};
 use uuid::Uuid;
 
@@ -12,45 +15,22 @@ type SplitWssStream =
     SplitStream<WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
 
 #[tauri::command]
+pub async fn set_active_conversation(
+    con: State<'_, connections::Store>,
+    uuid: &str,
+) -> Result<(), String> {
+    con.inner()
+        .set_active_conversation(Uuid::parse_str(uuid).unwrap())
+        .await;
+    Ok(())
+}
+
+#[tauri::command]
 pub async fn cmd_get_conversations(
     con: State<'_, connections::Store>,
 ) -> Result<Vec<ConversationCmdType>, String> {
     let convos = con.inner().get_conversations().await;
     Ok(convos)
-}
-
-#[tauri::command]
-pub async fn cmd_get_chat_messages(
-    app: AppHandle,
-    db: State<'_, database::Store>,
-    uudi: String,
-) -> Result<(), String> {
-    let uuid: Uuid = Uuid::parse_str(&uudi).unwrap();
-    match db.get_messages(uuid).await {
-        Some(messages) => {
-            app.emit(
-                "chat-messages-event",
-                events::EventsFromServer::ChatMessages { messages },
-            )
-            .unwrap();
-        }
-        None => {
-            log::error!("Chat not found for uuid: {}", uuid);
-        }
-    };
-    Ok(())
-}
-
-#[tauri::command]
-pub async fn cmd_send_message(
-    db: State<'_, database::Store>,
-    uuid: &str,
-    message: &str,
-) -> Result<(), String> {
-    let uuid = Uuid::parse_str(uuid).unwrap();
-    let message: events::MessageCmdType = serde_json::from_str(&message).unwrap();
-    db.inner().add_message(uuid, message).await;
-    Ok(())
 }
 
 #[tauri::command]
@@ -109,32 +89,71 @@ async fn receive_server_message(
     mut read: SplitWssStream,
     db: database::Store,
 ) {
-    while let Some(message) = read.next().await {
-        match message {
-            Ok(msg) => {
-                log::info!("Received: {:?}", msg);
-                if let tungstenite::Message::Text(content) = msg {
-                    {
-                        let message = events::MessageCmdType::new(
-                            uuid,
-                            content.to_string(),
-                            false,
-                            chrono::Utc::now(),
-                        );
-
-                        db.add_message(uuid, message.clone()).await;
-                        app.emit(
-                            "chat-message-event",
-                            events::EventsFromServer::ChatMessage { message },
-                        )
-                        .unwrap();
-                    }
+    let mut message_buffer = Vec::new();
+    let mut interval = interval(Duration::from_millis(500));
+    loop {
+        tokio::select! {
+            _ = interval.tick() => {
+                if !message_buffer.is_empty() {
+                    app.emit("new_messages", &message_buffer)
+                        .expect("Failed to emit new_messages event");
+                    message_buffer.clear();
                 }
             }
-            Err(e) => {
-                log::info!("Error while receiving message: {:?}", e);
-                break;
+
+            message = read.next() => {
+                if let Some(Ok(tungstenite::Message::Text(content))) = message {
+                    let message = events::MessageCmdType::new(
+                        uuid,
+                        content.to_string(),
+                        false,
+                        chrono::Utc::now(),
+                    );
+
+                    message_buffer.push(message.clone());
+
+                    //  Save to the database
+                    db.add_message(uuid, message).await;
+                }
             }
         }
     }
+}
+
+////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////
+
+#[tauri::command]
+pub async fn cmd_get_chat_messages(
+    app: AppHandle,
+    db: State<'_, database::Store>,
+    uudi: String,
+) -> Result<(), String> {
+    let uuid: Uuid = Uuid::parse_str(&uudi).unwrap();
+    match db.get_messages(uuid).await {
+        Some(messages) => {
+            app.emit(
+                "chat-messages-event",
+                events::EventsFromServer::ChatMessages { messages },
+            )
+            .unwrap();
+        }
+        None => {
+            log::error!("Chat not found for uuid: {}", uuid);
+        }
+    };
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn cmd_send_message(
+    db: State<'_, database::Store>,
+    uuid: &str,
+    message: &str,
+) -> Result<(), String> {
+    let uuid = Uuid::parse_str(uuid).unwrap();
+    let message: events::MessageCmdType = serde_json::from_str(&message).unwrap();
+    db.inner().add_message(uuid, message).await;
+    Ok(())
 }

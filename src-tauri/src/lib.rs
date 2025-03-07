@@ -26,6 +26,7 @@ pub async fn run() {
             commands::cmd_open_conversation,
             commands::cmd_close_conversation,
             commands::cmd_get_conversations,
+            commands::set_active_conversation,
             //
             commands::cmd_send_message,
             commands::cmd_get_chat_messages,
