@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Clone, Serialize)]
 pub struct ConversationCmdType {
@@ -42,6 +43,14 @@ impl MessageCmdType {
             sent_by_client,
             timestamp: timestamp.to_string(),
         }
+    }
+
+    pub fn from_partial(partial_message: MessageCmdType) -> Self {
+        let uuid = Uuid::new_v4();
+        let content = partial_message.content;
+        let sent_by_client = partial_message.sent_by_client;
+        let timestamp = chrono::Utc::now();
+        MessageCmdType::new(uuid, content, sent_by_client, timestamp)
     }
 }
 

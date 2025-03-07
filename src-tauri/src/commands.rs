@@ -148,12 +148,16 @@ async fn receive_server_message(
 
 #[tauri::command]
 pub async fn cmd_send_conversation_message(
+    app: AppHandle,
     db: State<'_, database::Store>,
     uuid: &str,
-    message: events::MessageCmdType,
+    partial_message: events::MessageCmdType,
 ) -> Result<(), String> {
-    log::info!("{message:?}");
-    // let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
-
+    log::info!("Received message: {partial_message:?}");
+    let uuid = Uuid::parse_str(uuid).map_err(|e| format!("Invalid UUID: {}", e))?;
+    let new_msg = events::MessageCmdType::from_partial(partial_message);
+    db.add_message(uuid, new_msg.clone()).await;
+    app.emit("event_new_messages", &vec![new_msg])
+        .expect("Failed to emit event for new messages");
     Ok(())
 }

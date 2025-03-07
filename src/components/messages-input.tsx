@@ -23,7 +23,7 @@ const MessagesInput: React.FC = () => {
 
         await invoke('cmd_send_conversation_message', {
           uuid: selectedChat.uuid,
-          message: newMessage,
+          partialMessage: newMessage,
         });
 
         setMessage(''); // Clear the input after sending
