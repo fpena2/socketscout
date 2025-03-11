@@ -10,7 +10,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { invoke } from '@tauri-apps/api/core';
-import { DialogProps, DialogsProvider, useDialogs } from '@toolpad/core/useDialogs';
+import { DialogsProvider, useDialogs } from '@toolpad/core/useDialogs';
+import { ConversationCmdType } from '@/types/index';
 
 interface TransferFormData {
   ws_server: string;
@@ -31,11 +32,14 @@ function useFormContext() {
   return context;
 }
 
-function TransactionDialog({
-  payload,
-  open,
-  onClose,
-}: DialogProps<{ component: React.ReactNode; data: string }, string | null>) {
+
+interface TransactionDialogProps {
+  payload: { component: React.ReactNode; data: string };
+  open: boolean;
+  onClose: (result: ConversationCmdType | null) => void;
+}
+
+function TransactionDialog({ payload, open, onClose }: TransactionDialogProps) {
   const [loading, setLoading] = React.useState(false);
   const { formData } = useFormContext();
 
@@ -58,10 +62,10 @@ function TransactionDialog({
             setLoading(true);
             try {
               const address = `ws://${formData.ws_server}:${formData.ws_port}${formData.ws_uri}`;
-              const cmd_result = await invoke<string>('cmd_open_conversation', {
+              const cmdResult = await invoke<ConversationCmdType>('cmd_open_conversation', {
                 address: address,
               });
-              onClose(cmd_result);
+              onClose(cmdResult);
             } catch (error) {
               console.error('Error establishing connection:', error);
             } finally {
@@ -108,14 +112,14 @@ function DialogContainer() {
       color='success'
       onClick={async () => {
         // preview-start
-        const cmd_result = await dialogs.open(TransactionDialog, {
+        const cmdResult: ConversationCmdType | null = await dialogs.open(TransactionDialog, {
           component: <Payload />,
           data: csrfToken,
         });
         // preview-end
-        console.log(cmd_result)
-        if (cmd_result) {
-          dialogs.alert(`Server connection completed with ID: ${cmd_result.uuid}`, {
+        console.log(cmdResult)
+        if (cmdResult) {
+          dialogs.alert(`Server connection completed with ID: ${cmdResult.uuid}`, {
             title: 'Success',
           });
         }

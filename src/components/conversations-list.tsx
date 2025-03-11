@@ -3,13 +3,12 @@ import { invoke } from '@tauri-apps/api/core';
 import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 
-import { chatsAtom, selectedChatAtom, selectedChatMessagesAtom } from '@/stores/atoms';
+import { chatsAtom, selectedChatAtom } from '@/stores/atoms';
 import { ConversationCmdType } from '@/types';
 
 export const ConversationsList: React.FC = () => {
   const [chats, setChats] = useAtom(chatsAtom);
   const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
-  const [messages, setMessages] = useAtom(selectedChatMessagesAtom);
 
   useEffect(() => {
     invoke<ConversationCmdType[]>('cmd_get_conversations')

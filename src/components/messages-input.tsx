@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { IoSend } from 'react-icons/io5';
 
 const MessagesInput: React.FC = () => {
-  const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
+  const [selectedChat] = useAtom(selectedChatAtom);
   const [message, setMessage] = useState<string>('');
 
   const handleSend = async (value: string): Promise<void> => {

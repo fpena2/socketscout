@@ -10,7 +10,7 @@ const MessagesHeader: React.FC<{ isMobile: boolean; onMenuClick: () => void }> =
   isMobile,
   onMenuClick,
 }) => {
-  const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
+  const [selectedChat] = useAtom(selectedChatAtom);
   return (
     <ChatHeader>
       {isMobile && (

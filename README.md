@@ -4,15 +4,15 @@
 ## Prerequisites
 
 - [Tauri dependencies](https://tauri.app/start/prerequisites/#linux)
-- [pnpm](https://pnpm.io/installation#on-posix-systems)
+- Enable [`yarn`](https://yarnpkg.com/getting-started/install)
 
 ## Development
 
 In Linux, avoid using `VSCode`'s terminal if installed as `flatpack` or `snap`.
 
 ```bash
-pnpm i
-pnpm tauri dev
+yarn install
+yarn tauri dev
 ```
 
 ## Features

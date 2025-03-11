@@ -53,14 +53,3 @@ impl MessageCmdType {
         MessageCmdType::new(uuid, content, sent_by_client, timestamp)
     }
 }
-
-#[derive(Clone, Serialize)]
-#[serde(rename_all = "camelCase", tag = "event", content = "data")]
-pub enum EventsFromServer {
-    #[serde(rename_all = "camelCase")]
-    AllChats { chats: Vec<ConversationCmdType> },
-    #[serde(rename_all = "camelCase")]
-    ChatMessages { messages: Vec<MessageCmdType> },
-    #[serde(rename_all = "camelCase")]
-    ChatMessage { message: MessageCmdType },
-}

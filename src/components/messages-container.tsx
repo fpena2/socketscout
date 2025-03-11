@@ -10,7 +10,7 @@ import { MessageCmdType } from '@/types';
 import { invoke } from '@tauri-apps/api/core';
 
 const MessagesContainer: React.FC = () => {
-  const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom);
+  const [selectedChat] = useAtom(selectedChatAtom);
   const [messages, setMessages] = useAtom(selectedChatMessagesAtom);
 
   const fetchHistory = async () => {
