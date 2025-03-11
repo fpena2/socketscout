@@ -1,4 +1,4 @@
-# SocketScout
+# socket-scout
 
 
 ## Prerequisites

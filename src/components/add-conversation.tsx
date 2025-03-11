@@ -58,10 +58,10 @@ function TransactionDialog({
             setLoading(true);
             try {
               const address = `ws://${formData.ws_server}:${formData.ws_port}${formData.ws_uri}`;
-              const uuid = await invoke<string>('cmd_open_conversation', {
+              const cmd_result = await invoke<string>('cmd_open_conversation', {
                 address: address,
               });
-              onClose(uuid);
+              onClose(cmd_result);
             } catch (error) {
               console.error('Error establishing connection:', error);
             } finally {
@@ -108,13 +108,14 @@ function DialogContainer() {
       color='success'
       onClick={async () => {
         // preview-start
-        const uuid = await dialogs.open(TransactionDialog, {
+        const cmd_result = await dialogs.open(TransactionDialog, {
           component: <Payload />,
           data: csrfToken,
         });
         // preview-end
-        if (uuid) {
-          dialogs.alert(`Server connection completed with ID: ${uuid}`, {
+        console.log(cmd_result)
+        if (cmd_result) {
+          dialogs.alert(`Server connection completed with ID: ${cmd_result.uuid}`, {
             title: 'Success',
           });
         }

@@ -12,7 +12,8 @@ const ConversationsHeader: React.FC = () => (
         alignItems: 'center',
       }}
     >
-      Conversations
+      {/* "Connection" seems better for the UI, but "Conversation" makes more sense.*/}
+      Connections
     </Typography>
     <NewConversation />
   </Stack>
