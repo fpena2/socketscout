@@ -77,13 +77,10 @@ pub async fn cmd_open_conversation(
         con.inner().add_conversation(uuid, (address, write)).await;
     }
 
-    // Open a new chat
     {
         db.inner().start_chat(uuid).await;
     }
 
-    // FIXME: listen after the chat is opened by the user
-    // Collect messages from server
     tokio::spawn(receive_server_message(
         app,
         uuid,
@@ -97,6 +94,7 @@ pub async fn cmd_open_conversation(
         .get_conversation(uuid)
         .await
         .expect("Conversation not found");
+
     Ok(convo)
 }
 
@@ -134,17 +132,13 @@ async fn receive_server_message(
 
                     message_buffer.push(message.clone());
 
-                    //  Save to the database
+                    // Save to the database
                     db.add_message(uuid, message).await;
                 }
             }
         }
     }
 }
-
-////////////////////////////////////////////////////////
-//
-////////////////////////////////////////////////////////
 
 #[tauri::command]
 pub async fn cmd_send_conversation_message(
