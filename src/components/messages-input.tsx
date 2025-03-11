@@ -33,20 +33,20 @@ const MessagesInput: React.FC = () => {
     }
   };
   return (
-    <InputArea onSubmit={(e) => e.preventDefault()}>
+    <InputArea onSubmit={(e: React.FormEvent) => e.preventDefault()}>
       <TextField
         fullWidth
         variant='outlined'
         placeholder='Type a message'
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
         size='small'
         aria-label='message input'
       />
       <IconButton
         color='primary'
         aria-label='send message'
-        onClick={async (e) => {
+        onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           await handleSend(message);
         }}

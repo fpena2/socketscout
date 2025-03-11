@@ -87,17 +87,17 @@ function Payload() {
       <TextField
         label='Server URL'
         value={formData.ws_server}
-        onChange={(event) => setFormData({ ...formData, ws_server: event.target.value })}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, ws_server: event.target.value })}
       />
       <TextField
         label='Server Port'
         value={formData.ws_port}
-        onChange={(event) => setFormData({ ...formData, ws_port: event.target.value })}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, ws_port: event.target.value })}
       />
       <TextField
         label='Server URI'
         value={formData.ws_uri}
-        onChange={(event) => setFormData({ ...formData, ws_uri: event.target.value })}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, ws_uri: event.target.value })}
       />
     </Stack>
   );
